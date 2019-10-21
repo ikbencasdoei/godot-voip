@@ -1,5 +1,6 @@
-# godot-voip-demo
-  
+# Godot VoIP demo 🎤📡
+![logo](https://raw.githubusercontent.com/cbarsugman/godot-voip-demo/master/icon.png "Logo")
+
 ## Introduction
 Since there are basically no sources on how to send microphone input over network and microphone input has only been added recently in godot, I just decided to experiment myself. What I created is a very rough implementation but works well enough. I thought this was worth sharing so i decided to create this demo.
 
