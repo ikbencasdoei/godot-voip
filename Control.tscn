@@ -6,23 +6,23 @@
 script/source = "extends Control
 
 func _ready():
-	pass
+    pass
 
 func _on_Button_server_pressed() -> void:
-	Network.start_server()
-	$Button_server.disabled = true
-	$Button_client.disabled = true
+    Network.start_server()
+    $Button_server.disabled = true
+    $Button_client.disabled = true
 
 func _on_Button_client_pressed() -> void:
-	Network.start_client()
-	$Button_server.disabled = true
-	$Button_client.disabled = true
+    Network.start_client()
+    $Button_server.disabled = true
+    $Button_client.disabled = true
 
 func _on_Button_voice_button_down() -> void:
-	$Output.recording = true
-	
+    $Output.recording = true
+    
 func _on_Button_voice_button_up() -> void:
-	$Output.recording = false
+    $Output.recording = false
 "
 
 [sub_resource type="AudioStreamMicrophone" id=2]
@@ -45,6 +45,9 @@ margin_top = 80.0
 margin_right = 173.345
 margin_bottom = 100.0
 text = "Start client"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Button_voice" type="Button" parent="."]
 margin_left = 46.3451
@@ -79,6 +82,7 @@ script = ExtResource( 1 )
 
 [node name="Input" type="AudioStreamPlayer" parent="."]
 stream = SubResource( 2 )
+autoplay = true
 bus = "Record"
 [connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
