@@ -1,3 +1,5 @@
+[⮩View in Godot Asset Library](https://godotengine.org/asset-library/asset/425)
+
 # Godot VoIP demo 🎤📡
 ![logo](https://raw.githubusercontent.com/cbarsugman/godot-voip-demo/master/icon.png "Logo")
 
