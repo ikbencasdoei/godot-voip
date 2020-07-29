@@ -8,6 +8,9 @@ Since there are basically no sources on how to send microphone input over networ
 
 ## How to setup for yourself
 >There are some things I first overlooked so please take a look:
+
+**current implementation requires the use of a high level multiplayer peer.**
+
 1. Enable audio input for your project (Project Settings -> Audio -> Enable Audio Input).
 2. Create a new audio bus called Record.
 3. Add the record effect and mute the audio bus.
