@@ -10,7 +10,7 @@ Godot-voip is a Godot addon (currently only 3.2) which makes it very easy to set
 ### Adding to a existing project
 
 (A high-level multiplayer peer is required.)
-1. Click on the AssetLib inside editor or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset) to download the latest release, or you can clone/download this repository to get the latest commit.
+1. Click on the AssetLib inside editor or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to download the latest release, or you can clone/download this repository to get the latest commit.
 2. Select the `addons/godot-voip` folder and move it into your Godot project. 
 (**Note**: make sure the structure is still `res://addons/godot-voip`)
 3. Go to project-settings/audio and enable audio input.
@@ -19,7 +19,7 @@ Godot-voip is a Godot addon (currently only 3.2) which makes it very easy to set
 6. Set `$VoipInstance.recording` to `true` and it will send your microphone input to other connected players.
 
 ### Running demo
-1. When in the Godot project manager click on the templates tab or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset) to download the latest release, or you can clone/download this repository to get the latest commit.
+1. When in the Godot project manager click on the templates tab or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to download the latest release, or you can clone/download this repository to get the latest commit.
 2. Open downloaded project.
 
 ## Issues
