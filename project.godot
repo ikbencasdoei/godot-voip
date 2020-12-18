@@ -12,12 +12,12 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "VoipInstance",
 "language": "GDScript",
-"path": "res://addons/godot-voip/voip/voip_instance.gd"
+"path": "res://addons/godot-voip/scripts/voip_instance.gd"
 }, {
 "base": "AudioStreamPlayer",
 "class": "VoipMicrophone",
 "language": "GDScript",
-"path": "res://addons/godot-voip/voip/voip_microphone.gd"
+"path": "res://addons/godot-voip/scripts/voip_microphone.gd"
 } ]
 _global_script_class_icons={
 "VoipInstance": "",
@@ -28,10 +28,10 @@ _global_script_class_icons={
 
 config/name="godot-voip"
 run/main_scene="res://addons/godot-voip/demo/Demo.tscn"
-boot_splash/image="res://addons/godot-voip/icon.png"
+boot_splash/image="res://addons/godot-voip/icon_old.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
-config/icon="res://addons/godot-voip/icon.png"
+config/icon="res://addons/godot-voip/icon_old.png"
 
 [audio]
 
