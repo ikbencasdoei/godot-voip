@@ -1,39 +1,81 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/godot-voip/voip/voip.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-voip/voip/voip_instance.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
 func _ready():
-    pass
+	$VoipInstance.connect(\"received_voice_data\", self, \"_received_voice_data\")
+	$VoipInstance.connect(\"send_voice_data\", self, \"_send_voice_data\")
+
+	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
+	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
+	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
+
+	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
+	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
 
 func _on_Button_server_pressed() -> void:
-    Network.start_server()
-    $Button_server.disabled = true
-    $Button_client.disabled = true
+	var err = $Network.start_server()
+	if err != OK:
+		$Status.text = \"Failed to create server!\"
+
+	$Status.text = \"server started\"
+	$Button_server.disabled = true
+	$Button_client.disabled = true
+	$Button_voice.disabled = false
 
 func _on_Button_client_pressed() -> void:
-    Network.start_client()
-    $Button_server.disabled = true
-    $Button_client.disabled = true
+	var err = $Network.start_client()
+	if err != OK:
+		$Status.text = \"failed to create client!\"
+
+	$Status.text = \"Connecting...\"
+	$Button_server.disabled = true
+	$Button_client.disabled = true
+	$Button_voice.disabled = false
 
 func _on_Button_voice_button_down() -> void:
-    $Output.recording = true
-    
+	$VoipInstance.recording = true
+
 func _on_Button_voice_button_up() -> void:
-    $Output.recording = false
+	$VoipInstance.recording = false
+
+func _connected_ok():
+	$Status.text = \"Connected ok\"
+
+func _connected_fail():
+	$Status.text = \"Failed to connect to server!\"
+
+func _server_disconnected():
+	$Status.text = \"Server disconnected\"
+
+
+func _player_connected(_id):
+	$Log.text += \"Player with id: %s connected\\n\" % _id
+
+func _player_disconnected(_id):
+	$Log.text += \"Player with id: %s disconnected\\n\" % _id
+
+func _received_voice_data(data: PoolByteArray, id: int):
+	$Log.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
+
+func _send_voice_data(data: PoolByteArray):
+	$Log.text += \"send voice data of size:%s\\n\" % data.size()
 "
 
-[sub_resource type="AudioStreamMicrophone" id=2]
-
-[node name="Control" type="Control"]
+[node name="Demo" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Network" type="Node" parent="."]
+script = ExtResource( 2 )
 
 [node name="Button_server" type="Button" parent="."]
 margin_left = 46.3451
@@ -62,6 +104,9 @@ margin_right = 173.345
 margin_bottom = 180.0
 disabled = true
 text = "Speak"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Status" type="Label" parent="."]
 margin_left = 220.0
@@ -69,27 +114,21 @@ margin_top = 44.2765
 margin_right = 370.0
 margin_bottom = 58.2765
 text = "Status:"
-
-[node name="Label2" type="Label" parent="."]
-margin_left = 220.0
-margin_top = 80.0
-margin_right = 370.0
-margin_bottom = 94.0
-text = "Log:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Log" type="Label" parent="."]
 margin_left = 220.0
 margin_top = 100.0
 margin_right = 980.0
 margin_bottom = 340.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Output" type="AudioStreamPlayer" parent="."]
+[node name="VoipInstance" type="Node" parent="."]
 script = ExtResource( 1 )
-
-[node name="Input" type="AudioStreamPlayer" parent="."]
-stream = SubResource( 2 )
-autoplay = true
-bus = "Record"
 [connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
 [connection signal="button_down" from="Button_voice" to="." method="_on_Button_voice_button_down"]
