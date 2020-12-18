@@ -28,10 +28,9 @@ _global_script_class_icons={
 
 config/name="godot-voip"
 run/main_scene="res://addons/godot-voip/demo/Demo.tscn"
-boot_splash/image="res://addons/godot-voip/icon_old.png"
+boot_splash/image="res://addons/godot-voip/icon.png"
 boot_splash/fullsize=false
-boot_splash/bg_color=Color( 0, 0, 0, 1 )
-config/icon="res://addons/godot-voip/icon_old.png"
+config/icon="res://addons/godot-voip/icon.png"
 
 [audio]
 
