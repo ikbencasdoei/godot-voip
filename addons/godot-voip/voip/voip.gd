@@ -20,7 +20,7 @@ remote func _play(id, audioPacket, format, mix_rate, stereo):
 	audioStream.set_stereo(stereo)
 	stream = audioStream
 	play()
-	
+
 func _process(delta: float) -> void:
 	if recording:
 		if mic.is_recording_active():
@@ -31,11 +31,11 @@ func _process(delta: float) -> void:
 				get_node("/root/Control/Log").text += "send recording of size %s\n" % record.get_data().size()
 				mic.set_recording_active(true)
 				time_elapsed = 0
-				
+
 			time_elapsed += delta
 		else:
 			mic.set_recording_active(true)
 	else:
 		mic.set_recording_active(false)
-		
+
 

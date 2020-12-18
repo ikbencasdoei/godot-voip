@@ -16,7 +16,9 @@ _global_script_class_icons={
 [application]
 
 config/name="Voip demo"
-run/main_scene="res://Control.tscn"
+run/main_scene="res://addons/godot-voip/demo/Demo.tscn"
+boot_splash/image="res://icon.png"
+boot_splash/fullsize=false
 config/icon="res://icon.png"
 
 [audio]
@@ -25,7 +27,7 @@ enable_audio_input=true
 
 [autoload]
 
-Network="*res://Network.gd"
+Network="*res://addons/godot-voip/demo/Network.gd"
 
 [rendering]
 

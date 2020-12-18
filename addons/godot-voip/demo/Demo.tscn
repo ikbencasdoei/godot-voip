@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://voip.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-voip/voip/voip.gd" type="Script" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -31,6 +31,9 @@ func _on_Button_voice_button_up() -> void:
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Button_server" type="Button" parent="."]
 margin_left = 46.3451
@@ -38,6 +41,9 @@ margin_top = 44.2765
 margin_right = 173.345
 margin_bottom = 64.2765
 text = "Start server"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Button_client" type="Button" parent="."]
 margin_left = 46.3451
