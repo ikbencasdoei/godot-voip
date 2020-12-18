@@ -1,20 +1,27 @@
 [⮩View in Godot Asset Library](https://godotengine.org/asset-library/asset/425)
+>previously godot-voip-demo
+# Godot VoIP 🎤📡
+![logo](https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icon.png "Logo")
 
-# Godot VoIP demo 🎤📡
-![logo](https://raw.githubusercontent.com/cbarsugman/godot-voip-demo/master/icon.png "Logo")
+Godot-voip is a Godot addon (currently only 3.2) which makes it very easy to setup a voip system in your Godot game. This addon also includes a demo project.
 
-## Introduction
-Since there are basically no sources on how to send microphone input over network and microphone input has only been added recently in godot, I just decided to experiment myself. What I created is a very rough implementation but works well enough. I thought this was worth sharing so i decided to create this demo.
+## Setup
 
-## How to setup for yourself
->There are some things I first overlooked so please take a look:
+### Adding to a existing project
 
-**(Current implementation requires the use of a high level multiplayer peer.)**
+(A high-level multiplayer peer is required.)
+1. Click on the AssetLib inside editor or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset) to download the latest release, or you can clone/download this repository to get the latest commit.
+2. Select the `addons/godot-voip` folder and move it into your Godot project. 
+(**Note**: make sure the structure is still `res://addons/godot-voip`)
+3. Go to project-settings/audio and enable audio input.
+4. Now go to the plugins tab also inside project-settings and enable the godot-voip plugin.
+5. Add a VoipInstance node to your scene.
+6. Set `$VoipInstance.recording` to `true` and it will send your microphone input to other connected players.
 
-1. Enable audio input for your project (Project Settings -> Audio -> Enable Audio Input).
-2. Create a new audio bus called Record.
-3. Add the record effect and mute the audio bus.
-4. Create an AudioStreamPlayer somewhere in your scene and add as stream a AudioStreamMicrophone to it.
-5. Also enable Autoplay and set the output bus to the Record bus you created earlier.
+### Running demo
+1. When in the Godot project manager click on the templates tab or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset) to download the latest release, or you can clone/download this repository to get the latest commit.
+2. Open downloaded project.
 
-Now you are able to record your microphone and use it to transmit it to an another AudioStreamPlayer over your server with help of the voip.gd script.
+## Issues
+
+In this current implementation there are issues with latency and interruptions. This is because the native way access to the microphone audio is handled. Sadly it is up to engine development to improve this.
