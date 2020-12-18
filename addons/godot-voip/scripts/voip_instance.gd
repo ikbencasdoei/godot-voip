@@ -6,6 +6,7 @@ signal send_voice_data
 signal _updated_sample_format
 
 export var min_packet_lenght_seconds: float = 1.0
+export var custom_voice_audio_stream_player: NodePath
 
 var recording: bool = false
 
@@ -14,7 +15,7 @@ var voip_mix_rate: int = -1
 var voip_stereo: bool = true
 
 var _microphone: VoipMicrophone
-var _voice: AudioStreamPlayer
+var _voice
 var _effect_record: AudioEffectRecord
 var _latest_sample: AudioStreamSample
 var _time_recording: float = 0
@@ -23,8 +24,18 @@ func _ready() -> void:
 	_microphone = VoipMicrophone.new()
 	add_child(_microphone)
 
-	_voice = AudioStreamPlayer.new()
-	add_child(_voice)
+	if !custom_voice_audio_stream_player.is_empty():
+		var player = get_node(custom_voice_audio_stream_player)
+		if player != null:
+			if player is AudioStreamPlayer || player is AudioStreamPlayer2D || player is AudioStreamPlayer3D:
+				_voice = player
+			else:
+				push_error("voip_isntance.gd: node:'%s' is not any kind of AudioStreamPlayer!" % custom_voice_audio_stream_player)
+		else:
+			push_error("voip_isntance.gd: node:'%s' does not exist!" % custom_voice_audio_stream_player)
+	else:
+		_voice = AudioStreamPlayer.new()
+		add_child(_voice)
 
 	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
 	_effect_record = AudioServer.get_bus_effect(record_bus_idx, 0)
