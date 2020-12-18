@@ -8,26 +8,39 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node",
+"class": "VoipInstance",
+"language": "GDScript",
+"path": "res://addons/godot-voip/voip/voip_instance.gd"
+}, {
+"base": "AudioStreamPlayer",
+"class": "VoipMicrophone",
+"language": "GDScript",
+"path": "res://addons/godot-voip/voip/voip_microphone.gd"
+} ]
 _global_script_class_icons={
-
+"VoipInstance": "",
+"VoipMicrophone": ""
 }
 
 [application]
 
-config/name="Voip demo"
+config/name="godot-voip"
 run/main_scene="res://addons/godot-voip/demo/Demo.tscn"
-boot_splash/image="res://icon.png"
+boot_splash/image="res://addons/godot-voip/icon.png"
 boot_splash/fullsize=false
-config/icon="res://icon.png"
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
+config/icon="res://addons/godot-voip/icon.png"
 
 [audio]
 
+default_bus_layout=""
 enable_audio_input=true
 
-[autoload]
+[editor_plugins]
 
-Network="*res://addons/godot-voip/demo/Network.gd"
+enabled=PoolStringArray( "godot-voip" )
 
 [rendering]
 
