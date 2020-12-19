@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.svg-3d1ad948e79aa42127ceda7a759bb4d6.stex"
+path="res://.import/icon.svg-218a8f2b3041327d8a5756f3a245f83b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot-voip/icon.svg"
-dest_files=[ "res://.import/icon.svg-3d1ad948e79aa42127ceda7a759bb4d6.stex" ]
+source_file="res://icon.svg"
+dest_files=[ "res://.import/icon.svg-218a8f2b3041327d8a5756f3a245f83b.stex" ]
 
 [params]
 
