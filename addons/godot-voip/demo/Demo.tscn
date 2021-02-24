@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/godot-voip/scripts/voip_instance.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
@@ -54,16 +54,23 @@ func _server_disconnected():
 
 
 func _player_connected(_id):
-	$Log.text += \"Player with id: %s connected\\n\" % _id
+	$ScrollContainer/Log.text += \"Player with id: %s connected\\n\" % _id
 
 func _player_disconnected(_id):
-	$Log.text += \"Player with id: %s disconnected\\n\" % _id
+	$ScrollContainer/Log.text += \"Player with id: %s disconnected\\n\" % _id
 
 func _received_voice_data(data: PoolByteArray, id: int):
-	$Log.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
+	$ScrollContainer/Log.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
 
 func _send_voice_data(data: PoolByteArray):
-	$Log.text += \"send voice data of size:%s\\n\" % data.size()
+	$ScrollContainer/Log.text += \"send voice data of size:%s\\n\" % data.size()
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends ScrollContainer
+
+func _on_Log_resized() -> void:
+	scroll_vertical = $Log.rect_size.y
 "
 
 [node name="Demo" type="Control"]
@@ -118,18 +125,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Log" type="Label" parent="."]
-margin_left = 220.0
-margin_top = 100.0
-margin_right = 980.0
-margin_bottom = 340.0
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 190.0
+margin_top = 71.0
+script = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Log" type="Label" parent="ScrollContainer"]
+margin_bottom = 14.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VoipInstance" type="Node" parent="."]
 script = ExtResource( 1 )
+
 [connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
 [connection signal="button_down" from="Button_voice" to="." method="_on_Button_voice_button_down"]
 [connection signal="button_up" from="Button_voice" to="." method="_on_Button_voice_button_up"]
+[connection signal="resized" from="ScrollContainer/Log" to="ScrollContainer" method="_on_Log_resized"]
