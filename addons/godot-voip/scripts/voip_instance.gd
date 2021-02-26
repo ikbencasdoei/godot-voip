@@ -10,8 +10,8 @@ export var custom_voice_audio_stream_player: NodePath
 export var recording: bool = false
 
 var voip_format: int = AudioStreamSample.FORMAT_8_BITS
-var voip_mix_rate: int = 44100
-var voip_stereo: bool = false
+var _voip_mix_rate: int = AudioServer.get_mix_rate()
+var _voip_stereo: bool = false
 
 var _microphone: VoipMicrophone
 var _voice
@@ -45,8 +45,8 @@ remote func _speak(sample_data: PoolByteArray, id: int = -1):
 	sample.data = sample_data
 
 	sample.set_format(voip_format)
-	sample.set_mix_rate(voip_mix_rate)
-	sample.set_stereo(voip_stereo)
+	sample.set_mix_rate(_voip_mix_rate)
+	sample.set_stereo(_voip_stereo)
 
 	_voice.stream = sample
 	_voice.play()
