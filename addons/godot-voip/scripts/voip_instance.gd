@@ -8,6 +8,7 @@ signal _updated_sample_format
 export var custom_voice_audio_stream_player: NodePath
 
 export var recording: bool = false
+export var listen: bool = false
 
 enum FORMAT {_8_BIT = AudioStreamSample.FORMAT_8_BITS, _16_BIT_ = AudioStreamSample.FORMAT_16_BITS}
 
@@ -82,6 +83,9 @@ func _process(delta: float) -> void:
 						data[i] = frame & 0xFF
 						i += 1
 						frame >>= 8
+
+			if listen:
+				_speak(data, get_tree().get_network_unique_id())
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
