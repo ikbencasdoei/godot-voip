@@ -10,9 +10,9 @@ export var custom_voice_audio_stream_player: NodePath
 
 var recording: bool = false
 
-var voip_format: int = -1
-var voip_mix_rate: int = -1
-var voip_stereo: bool = true
+var voip_format: int = 0
+var voip_mix_rate: int = 44100
+var voip_stereo: bool = false
 
 var _microphone: VoipMicrophone
 var _voice
@@ -40,25 +40,12 @@ func _ready() -> void:
 	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
 	_effect_record = AudioServer.get_bus_effect(record_bus_idx, 0)
 
-remote func _receive_stream_format(_format: int, _mix_rate: int, _stereo: bool):
-	voip_format = _format
-	voip_mix_rate = _mix_rate
-	voip_stereo = _stereo
-
-	emit_signal("_updated_sample_format")
-
-remote func _send_stream_format():
-	rpc("_receive_stream_format", _latest_sample.format, _latest_sample.mix_rate, _latest_sample.stereo)
 
 remote func _speak(sample_data: PoolByteArray, id: int = -1):
 	emit_signal("received_voice_data", sample_data, id)
 
 	var sample = AudioStreamSample.new()
 	sample.data = sample_data
-
-	if voip_format == -1:
-		rpc("_send_stream_format")
-		yield(self, "_updated_sample_format")
 
 	sample.set_format(voip_format)
 	sample.set_mix_rate(voip_mix_rate)
