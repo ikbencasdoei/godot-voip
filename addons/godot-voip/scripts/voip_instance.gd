@@ -67,7 +67,18 @@ func _process(delta: float) -> void:
 					data[i] = frame
 
 			elif voip_format == AudioStreamSample.FORMAT_16_BITS:
-				pass
+				data.resize(stereo_data.size() * 2)
+
+				for i in range (stereo_data.size()):
+					var frame = stereo_data[i]
+					frame = (frame.x + frame.y) / 2.0
+					frame = int(clamp(frame * 32768, -32768, 32767))
+
+					i *= 2
+					for x in range(2):
+						data[i] = frame & 0xFF
+						i += 1
+						frame >>= 8
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
