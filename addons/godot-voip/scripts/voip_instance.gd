@@ -5,7 +5,6 @@ signal received_voice_data
 signal send_voice_data
 signal _updated_sample_format
 
-export var min_packet_lenght_seconds: float = 1.0
 export var custom_voice_audio_stream_player: NodePath
 
 var recording: bool = false
@@ -16,9 +15,6 @@ var voip_stereo: bool = false
 
 var _microphone: VoipMicrophone
 var _voice
-var _effect_record: AudioEffectRecord
-var _latest_sample: AudioStreamSample
-var _time_recording: float = 0
 var _effect_capture: AudioEffectCapture
 
 func _ready() -> void:
@@ -39,7 +35,6 @@ func _ready() -> void:
 		add_child(_voice)
 
 	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
-	_effect_record = AudioServer.get_bus_effect(record_bus_idx, 0)
 
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
