@@ -12,7 +12,6 @@ func _ready() -> void:
 	AudioServer.add_bus(idx)
 	AudioServer.set_bus_name(idx, bus_name)
 
-	AudioServer.add_bus_effect(idx, AudioEffectRecord.new())
 	AudioServer.add_bus_effect(idx, AudioEffectCapture.new())
 
 	AudioServer.set_bus_mute(idx, true)
