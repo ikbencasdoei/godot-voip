@@ -6,9 +6,21 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+onready var buttonServer: Button = $MarginContainer/HBoxContainer/VBoxContainer/Server
+onready var buttonClient: Button = $MarginContainer/HBoxContainer/VBoxContainer/Client
+onready var buttonVoice : Button = $MarginContainer/HBoxContainer/VBoxContainer/Voice
+
+onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/Listen
+
+onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/Status
+onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
+
+onready var voip: VoipInstance = $VoipInstance
+onready var network: Network = $Network
+
 func _ready():
-	$VoipInstance.connect(\"received_voice_data\", self, \"_received_voice_data\")
-	$VoipInstance.connect(\"send_voice_data\", self, \"_send_voice_data\")
+	voip.connect(\"received_voice_data\", self, \"_received_voice_data\")
+	voip.connect(\"send_voice_data\", self, \"_send_voice_data\")
 
 	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
@@ -18,52 +30,64 @@ func _ready():
 	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
 
 func _on_Button_server_pressed() -> void:
-	var err = $Network.start_server()
+	var err = network.start_server()
 	if err != OK:
-		$Status.text = \"Failed to create server!\"
+		labelStatus.text = \"Failed to create server!\"
 
-	$Status.text = \"server started\"
-	$Button_server.disabled = true
-	$Button_client.disabled = true
-	$Button_voice.disabled = false
+	labelStatus.text = \"server started\"
+	buttonServer.disabled = true
+	buttonClient.disabled = true
+	buttonVoice.disabled = false
+	checkboxListen.disabled = false
 
 func _on_Button_client_pressed() -> void:
-	var err = $Network.start_client()
+	var err = network.start_client()
 	if err != OK:
-		$Status.text = \"failed to create client!\"
+		labelStatus.text = \"failed to create client!\"
 
-	$Status.text = \"Connecting...\"
-	$Button_server.disabled = true
-	$Button_client.disabled = true
-	$Button_voice.disabled = false
+	labelStatus.text = \"Connecting...\"
 
 func _on_Button_voice_button_down() -> void:
-	$VoipInstance.recording = true
+	voip.recording = true
 
 func _on_Button_voice_button_up() -> void:
-	$VoipInstance.recording = false
+	voip.recording = false
+
+func _on_Listen_toggled(button_pressed: bool) -> void:
+	voip.listen = button_pressed
 
 func _connected_ok():
-	$Status.text = \"Connected ok\"
+	labelStatus.text = \"Connected ok\"
+
+	buttonServer.disabled = true
+	buttonClient.disabled = true
+	buttonVoice.disabled = false
+	checkboxListen.disabled = false
 
 func _connected_fail():
-	$Status.text = \"Failed to connect to server!\"
+	labelStatus.text = \"Failed to connect to server!\"
 
 func _server_disconnected():
-	$Status.text = \"Server disconnected\"
+	labelStatus.text = \"Server disconnected\"
 
+	buttonServer.disabled = false
+	buttonClient.disabled = false
+	buttonVoice.disabled = true
+	checkboxListen.disabled = true
+	buttonVoice.pressed = false
 
 func _player_connected(_id):
-	$ScrollContainer/Log.text += \"Player with id: %s connected\\n\" % _id
+	labelLog.text += \"Player with id: %s connected\\n\" % _id
 
 func _player_disconnected(_id):
-	$ScrollContainer/Log.text += \"Player with id: %s disconnected\\n\" % _id
+	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
 func _received_voice_data(data: PoolByteArray, id: int):
-	$ScrollContainer/Log.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
+	labelLog.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
 
 func _send_voice_data(data: PoolByteArray):
-	$ScrollContainer/Log.text += \"send voice data of size:%s\\n\" % data.size()
+	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
+
 "
 
 [sub_resource type="GDScript" id=2]
@@ -84,68 +108,114 @@ __meta__ = {
 [node name="Network" type="Node" parent="."]
 script = ExtResource( 2 )
 
-[node name="Button_server" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 44.2765
-margin_right = 173.345
-margin_bottom = 64.2765
+[node name="VoipInstance" type="Node" parent="."]
+script = ExtResource( 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 50
+custom_constants/margin_top = 50
+custom_constants/margin_left = 50
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 974.0
+margin_bottom = 550.0
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_right = 150.0
+margin_bottom = 500.0
+rect_min_size = Vector2( 150, 0 )
+custom_constants/separation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Server" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_right = 150.0
+margin_bottom = 20.0
 text = "Start server"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button_client" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 80.0
-margin_right = 173.345
-margin_bottom = 100.0
+[node name="Client" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 30.0
+margin_right = 150.0
+margin_bottom = 50.0
 text = "Start client"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button_voice" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 160.0
-margin_right = 173.345
-margin_bottom = 180.0
+[node name="Voice" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 60.0
+margin_right = 150.0
+margin_bottom = 80.0
 disabled = true
 text = "Speak"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Status" type="Label" parent="."]
-margin_left = 220.0
-margin_top = 44.2765
-margin_right = 370.0
-margin_bottom = 58.2765
+[node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 90.0
+margin_right = 150.0
+margin_bottom = 114.0
+disabled = true
+text = "Listen"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_left = 200.0
+margin_right = 924.0
+margin_bottom = 500.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+margin_right = 724.0
+margin_bottom = 14.0
 text = "Status:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 190.0
-margin_top = 71.0
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+margin_top = 18.0
+margin_right = 724.0
+margin_bottom = 500.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = SubResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Log" type="Label" parent="ScrollContainer"]
-margin_bottom = 14.0
+[node name="Log" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer"]
+margin_right = 724.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VoipInstance" type="Node" parent="."]
-script = ExtResource( 1 )
-
-[connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
-[connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
-[connection signal="button_down" from="Button_voice" to="." method="_on_Button_voice_button_down"]
-[connection signal="button_up" from="Button_voice" to="." method="_on_Button_voice_button_up"]
-[connection signal="resized" from="ScrollContainer/Log" to="ScrollContainer" method="_on_Log_resized"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Client" to="." method="_on_Button_client_pressed"]
+[connection signal="button_down" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_down"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
+[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Listen" to="." method="_on_Listen_toggled"]
+[connection signal="resized" from="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log" to="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer" method="_on_Log_resized"]
