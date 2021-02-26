@@ -19,6 +19,7 @@ var _voice
 var _effect_record: AudioEffectRecord
 var _latest_sample: AudioStreamSample
 var _time_recording: float = 0
+var _effect_capture: AudioEffectCapture
 
 func _ready() -> void:
 	_microphone = VoipMicrophone.new()
@@ -40,6 +41,7 @@ func _ready() -> void:
 	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
 	_effect_record = AudioServer.get_bus_effect(record_bus_idx, 0)
 
+	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
 remote func _speak(sample_data: PoolByteArray, id: int = -1):
 	emit_signal("received_voice_data", sample_data, id)
@@ -56,24 +58,15 @@ remote func _speak(sample_data: PoolByteArray, id: int = -1):
 
 func _process(delta: float) -> void:
 	if recording:
-		if _effect_record.is_recording_active():
-			if _time_recording >= min_packet_lenght_seconds:
+		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
+		if stereo_data.size() > 0:
+			var data = PoolByteArray()
+			for frame in stereo_data:
+				var v = clamp(frame.x * 128, -128, 127)
+				data.append(v)
 
-				_effect_record.set_recording_active(false)
-				_latest_sample = _effect_record.get_recording()
-
-				rpc_unreliable("_speak", _latest_sample.get_data(),  get_tree().get_network_unique_id())
-
-				emit_signal("send_voice_data", _latest_sample.get_data())
-
-				_effect_record.set_recording_active(true)
-				_time_recording = 0
-
-			_time_recording += delta
-		else:
-			_effect_record.set_recording_active(true)
-	else:
-		_effect_record.set_recording_active(false)
+			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
+			emit_signal("send_voice_data", data)
 
 
 
