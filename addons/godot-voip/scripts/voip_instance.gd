@@ -7,7 +7,7 @@ signal _updated_sample_format
 
 export var custom_voice_audio_stream_player: NodePath
 
-var recording: bool = false
+export var recording: bool = false
 
 var voip_format: int = 0
 var voip_mix_rate: int = 44100
