@@ -1,4 +1,5 @@
 extends Node
+class_name Network
 
 const SERVER_PORT = 3000
 const MAX_PLAYERS = 20
