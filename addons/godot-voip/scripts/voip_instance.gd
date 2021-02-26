@@ -60,10 +60,11 @@ func _process(delta: float) -> void:
 			if voip_format == AudioStreamSample.FORMAT_8_BITS:
 				data.resize(stereo_data.size())
 
-				for frame in stereo_data:
+				for i in range(stereo_data.size()):
+					var frame = stereo_data[i]
 					frame = (frame.x + frame.y) / 2.0
 					frame = int(clamp(frame * 128, -128, 127))
-					data.append(frame)
+					data[i] = frame
 
 			elif voip_format == AudioStreamSample.FORMAT_16_BITS:
 				pass
