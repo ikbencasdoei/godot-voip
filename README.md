@@ -21,7 +21,3 @@ Godot-voip is a Godot addon (currently only 3.2) which makes it very easy to set
 ### Running demo
 1. Go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to download the latest release, or you can clone/download this repository to get the latest commit.
 2. Open downloaded project.
-
-## Issues
-
-In this current implementation there are issues with latency and interruptions. This is because the native way access to the microphone audio is handled. Sadly it is up to engine development to improve this.
