@@ -9,7 +9,7 @@ export var custom_voice_audio_stream_player: NodePath
 
 export var recording: bool = false
 
-var voip_format: int = 0
+var voip_format: int = AudioStreamSample.FORMAT_8_BITS
 var voip_mix_rate: int = 44100
 var voip_stereo: bool = false
 
@@ -56,9 +56,14 @@ func _process(delta: float) -> void:
 		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
 			var data = PoolByteArray()
-			for frame in stereo_data:
-				var v = clamp(frame.x * 128, -128, 127)
-				data.append(v)
+
+			if voip_format == AudioStreamSample.FORMAT_8_BITS:
+				for frame in stereo_data:
+					frame = (frame.x + frame.y) / 2.0
+					frame = clamp(frame * 128, -128, 127)
+					data.append(frame)
+			elif voip_format == AudioStreamSample.FORMAT_16_BITS:
+				pass
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
