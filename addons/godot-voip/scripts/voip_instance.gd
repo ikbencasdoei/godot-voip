@@ -9,7 +9,10 @@ export var custom_voice_audio_stream_player: NodePath
 
 export var recording: bool = false
 
-var voip_format: int = AudioStreamSample.FORMAT_8_BITS
+enum FORMAT {_8_BIT = AudioStreamSample.FORMAT_8_BITS, _16_BIT_ = AudioStreamSample.FORMAT_16_BITS}
+
+export(FORMAT) var voip_format: int = AudioStreamSample.FORMAT_16_BITS
+
 var _voip_mix_rate: int = AudioServer.get_mix_rate()
 var _voip_stereo: bool = false
 
