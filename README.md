@@ -1,9 +1,12 @@
 [⮩View in Godot Asset Library](https://godotengine.org/asset-library/asset/425)
->previously godot-voip-demo
 # Godot VoIP 🎤📡
 ![logo](https://raw.githubusercontent.com/casbrugman/godot-voip/master/icon.png "Logo")
 
-Godot-voip is a Godot addon (currently only 3.2) which makes it very easy to setup a voip system in your Godot game. This addon also includes a demo project.
+Godot-voip is a Godot addon which makes it very easy to setup a voip system in your Godot game. This addon also includes a demo project.
+
+## Compatibility
+* 2.0: Godot 3.2.x
+* 3.0: Godot >=3.2.4
 
 ## Setup
 
