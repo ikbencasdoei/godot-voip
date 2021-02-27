@@ -82,10 +82,10 @@ func _player_connected(_id):
 func _player_disconnected(_id):
 	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
-func _received_voice_data(data: PoolByteArray, id: int):
+func _received_voice_data(data: PoolRealArray, id: int):
 	labelLog.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
 
-func _send_voice_data(data: PoolByteArray):
+func _send_voice_data(data: PoolRealArray):
 	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
 
 "

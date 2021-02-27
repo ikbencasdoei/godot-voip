@@ -10,16 +10,12 @@ export var custom_voice_audio_stream_player: NodePath
 export var recording: bool = false
 export var listen: bool = false
 
-enum FORMAT {_8_BIT = AudioStreamSample.FORMAT_8_BITS, _16_BIT_ = AudioStreamSample.FORMAT_16_BITS}
-
-export(FORMAT) var voip_format: int = AudioStreamSample.FORMAT_16_BITS
-
-var _voip_mix_rate: int = AudioServer.get_mix_rate()
-var _voip_stereo: bool = false
-
 var _microphone: VoipMicrophone
 var _voice
 var _effect_capture: AudioEffectCapture
+var _playback: AudioStreamGeneratorPlayback
+
+var _receive_buffer := PoolRealArray()
 
 func _ready() -> void:
 	_microphone = VoipMicrophone.new()
@@ -42,54 +38,40 @@ func _ready() -> void:
 
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
-remote func _speak(sample_data: PoolByteArray, id: int = -1):
-	emit_signal("received_voice_data", sample_data, id)
 
-	var sample = AudioStreamSample.new()
-	sample.data = sample_data
-
-	sample.set_format(voip_format)
-	sample.set_mix_rate(_voip_mix_rate)
-	sample.set_stereo(_voip_stereo)
-
-	_voice.stream = sample
+	_voice.stream = AudioStreamGenerator.new()
+	_playback = _voice.get_stream_playback()
 	_voice.play()
+
+remote func _speak(sample_data: PoolRealArray, id: int = -1):
+	emit_signal("received_voice_data", sample_data, id)
+	_receive_buffer.append_array(sample_data)
+
+func _fill_buffer():
+	for i in range(_playback.get_frames_available()):
+		if _receive_buffer.size() > 0:
+			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
+			_receive_buffer.remove(0)
+		else:
+			_playback.push_frame(Vector2.ZERO)
 
 func _process(delta: float) -> void:
 	if recording:
 		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
-			var data = PoolByteArray()
 
-			if voip_format == AudioStreamSample.FORMAT_8_BITS:
-				data.resize(stereo_data.size())
+			var data = PoolRealArray()
+			data.resize(stereo_data.size())
 
-				for i in range(stereo_data.size()):
-					var frame = stereo_data[i]
-					frame = (frame.x + frame.y) / 2.0
-					frame = int(clamp(frame * 128, -128, 127))
-					data[i] = frame
-
-			elif voip_format == AudioStreamSample.FORMAT_16_BITS:
-				data.resize(stereo_data.size() * 2)
-
-				for i in range (stereo_data.size()):
-					var frame = stereo_data[i]
-					frame = (frame.x + frame.y) / 2.0
-					frame = int(clamp(frame * 32768, -32768, 32767))
-
-					i *= 2
-					for x in range(2):
-						data[i] = frame & 0xFF
-						i += 1
-						frame >>= 8
+			for i in range(stereo_data.size()):
+				data[i] = (stereo_data[i].x + stereo_data[i].y) / 2.0
 
 			if listen:
 				_speak(data, get_tree().get_network_unique_id())
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
-
+	_fill_buffer()
 
 
 
