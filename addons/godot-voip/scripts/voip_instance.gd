@@ -27,9 +27,9 @@ func _ready() -> void:
 			if player is AudioStreamPlayer || player is AudioStreamPlayer2D || player is AudioStreamPlayer3D:
 				_voice = player
 			else:
-				push_error("voip_isntance.gd: node:'%s' is not any kind of AudioStreamPlayer!" % custom_voice_audio_stream_player)
+				push_error("node:'%s' is not any kind of AudioStreamPlayer!" % custom_voice_audio_stream_player)
 		else:
-			push_error("voip_isntance.gd: node:'%s' does not exist!" % custom_voice_audio_stream_player)
+			push_error("node:'%s' does not exist!" % custom_voice_audio_stream_player)
 	else:
 		_voice = AudioStreamPlayer.new()
 		add_child(_voice)
