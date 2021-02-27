@@ -15,7 +15,7 @@ onready var sliderInputSensitivity: HSlider = $MarginContainer/HBoxContainer/VBo
 
 onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/Status
 onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
-onready var labelInputSensitivity: Label = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
+onready var spinBoxInputSensitivity: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
 onready var voip: VoipInstance = $VoipInstance
 onready var network: Network = $Network
@@ -44,6 +44,7 @@ func _on_Button_server_pressed() -> void:
 	buttonVoice.disabled = false
 	checkboxListen.disabled = false
 	sliderInputSensitivity.editable = true
+	spinBoxInputSensitivity.editable = true
 
 func _on_Button_client_pressed() -> void:
 	var err = network.start_client()
@@ -63,7 +64,10 @@ func _on_Listen_toggled(button_pressed: bool) -> void:
 
 func _on_InputSensitivity_value_changed(value: float) -> void:
 	voip.input_sensitivity = value
-	labelInputSensitivity.text = str(value)
+	spinBoxInputSensitivity.value = value
+
+func _on_Value_value_changed(value: float) -> void:
+	sliderInputSensitivity.value = value
 
 func _connected_ok():
 	labelStatus.text = \"Connected ok\"
@@ -73,6 +77,7 @@ func _connected_ok():
 	buttonVoice.disabled = false
 	checkboxListen.disabled = false
 	sliderInputSensitivity.editable = true
+	spinBoxInputSensitivity.editable = true
 
 func _connected_fail():
 	labelStatus.text = \"Failed to connect to server!\"
@@ -85,6 +90,8 @@ func _server_disconnected():
 	buttonVoice.disabled = true
 	checkboxListen.disabled = true
 	buttonVoice.pressed = false
+	sliderInputSensitivity.editable = false
+	spinBoxInputSensitivity.editable = false
 
 func _player_connected(_id):
 	labelLog.text += \"Player with id: %s connected\\n\" % _id
@@ -97,6 +104,7 @@ func _received_voice_data(data: PoolRealArray, id: int):
 
 func _send_voice_data(data: PoolRealArray):
 	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
+
 "
 
 [sub_resource type="GDScript" id=2]
@@ -142,16 +150,16 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_right = 150.0
+margin_right = 250.0
 margin_bottom = 859.0
-rect_min_size = Vector2( 150, 0 )
+rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Server" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_right = 150.0
+margin_right = 250.0
 margin_bottom = 20.0
 text = "Start server"
 __meta__ = {
@@ -160,7 +168,7 @@ __meta__ = {
 
 [node name="Client" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
-margin_right = 150.0
+margin_right = 250.0
 margin_bottom = 50.0
 text = "Start client"
 __meta__ = {
@@ -169,7 +177,7 @@ __meta__ = {
 
 [node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 60.0
-margin_right = 150.0
+margin_right = 250.0
 margin_bottom = 84.0
 disabled = true
 text = "Listen"
@@ -179,39 +187,42 @@ __meta__ = {
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 94.0
-margin_right = 150.0
-margin_bottom = 108.0
+margin_right = 250.0
+margin_bottom = 118.0
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_top = 5.0
 margin_right = 108.0
-margin_bottom = 14.0
+margin_bottom = 19.0
 text = "Input sensitivity:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Value" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Value" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 112.0
-margin_right = 112.0
-margin_bottom = 14.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="InputSensitivity" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 118.0
-margin_right = 150.0
-margin_bottom = 134.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
 max_value = 1.0
 step = 0.001
-value = 1.0
+editable = false
+
+[node name="InputSensitivity" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 128.0
+margin_right = 250.0
+margin_bottom = 144.0
+max_value = 0.1
+step = 0.0
+allow_greater = true
+allow_lesser = true
 editable = false
 ticks_on_borders = true
 
 [node name="Voice" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 144.0
-margin_right = 150.0
-margin_bottom = 164.0
+margin_top = 154.0
+margin_right = 250.0
+margin_bottom = 174.0
 disabled = true
 text = "Speak"
 __meta__ = {
@@ -219,14 +230,14 @@ __meta__ = {
 }
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 200.0
+margin_left = 300.0
 margin_right = 924.0
 margin_bottom = 859.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
-margin_right = 724.0
+margin_right = 624.0
 margin_bottom = 14.0
 text = "Status:"
 __meta__ = {
@@ -235,7 +246,7 @@ __meta__ = {
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
-margin_right = 724.0
+margin_right = 624.0
 margin_bottom = 859.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -245,7 +256,7 @@ __meta__ = {
 }
 
 [node name="Log" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer"]
-margin_right = 724.0
+margin_right = 624.0
 margin_bottom = 841.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -256,6 +267,7 @@ __meta__ = {
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Client" to="." method="_on_Button_client_pressed"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Listen" to="." method="_on_Listen_toggled"]
+[connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value" to="." method="_on_Value_value_changed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/InputSensitivity" to="." method="_on_InputSensitivity_value_changed"]
 [connection signal="button_down" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_down"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
