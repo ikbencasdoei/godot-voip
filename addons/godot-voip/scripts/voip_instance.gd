@@ -47,7 +47,7 @@ remote func _speak(sample_data: PoolRealArray, id: int = -1):
 	emit_signal("received_voice_data", sample_data, id)
 	_receive_buffer.append_array(sample_data)
 
-func _fill_buffer():
+func _process_input():
 	for i in range(_playback.get_frames_available()):
 		if _receive_buffer.size() > 0:
 			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
@@ -71,7 +71,7 @@ func _process(delta: float) -> void:
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
-	_fill_buffer()
+	_process_input()
 
 
 
