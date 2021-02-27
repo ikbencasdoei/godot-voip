@@ -9,7 +9,7 @@ export var custom_voice_audio_stream_player: NodePath
 
 export var recording: bool = false
 export var listen: bool = false
-export(float, 0.0, 1.0) var input_sensitivity: = 0.01
+export(float, 0.0, 1.0) var input_threshold: = 0.01
 
 var _microphone: VoipMicrophone
 var _voice
@@ -63,13 +63,13 @@ func _process_output():
 			var data = PoolRealArray()
 			data.resize(stereo_data.size())
 
-			if input_sensitivity > 0.0:
+			if input_threshold > 0.0:
 				var max_value = 0.0
 				for i in range(stereo_data.size()):
 					var value = (stereo_data[i].x + stereo_data[i].y) / 2.0
 					max_value = max(value, max_value)
 					data[i] = value
-				if max_value < input_sensitivity:
+				if max_value < input_threshold:
 					return
 			else:
 				for i in range(stereo_data.size()):
