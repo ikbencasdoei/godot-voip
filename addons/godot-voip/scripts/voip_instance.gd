@@ -55,7 +55,7 @@ func _process_input():
 		else:
 			_playback.push_frame(Vector2.ZERO)
 
-func _process(delta: float) -> void:
+func _process_output():
 	if recording:
 		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
@@ -71,7 +71,10 @@ func _process(delta: float) -> void:
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
+
+func _process(delta: float) -> void:
 	_process_input()
+	_process_output()
 
 
 
