@@ -205,7 +205,7 @@ margin_right = 250.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 max_value = 1.0
-step = 0.001
+step = 0.0
 editable = false
 
 [node name="InputSensitivity" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
