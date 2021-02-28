@@ -10,18 +10,24 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "Network",
+"language": "GDScript",
+"path": "res://addons/godot-voip/demo/Network.gd"
+}, {
+"base": "Node",
 "class": "VoipInstance",
 "language": "GDScript",
 "path": "res://addons/godot-voip/scripts/voip_instance.gd"
 }, {
 "base": "AudioStreamPlayer",
-"class": "VoipMicrophone",
+"class": "VoipMic",
 "language": "GDScript",
-"path": "res://addons/godot-voip/scripts/voip_microphone.gd"
+"path": "res://addons/godot-voip/scripts/voip_mic.gd"
 } ]
 _global_script_class_icons={
+"Network": "",
 "VoipInstance": "",
-"VoipMicrophone": ""
+"VoipMic": ""
 }
 
 [application]
@@ -43,4 +49,5 @@ enabled=PoolStringArray( "godot-voip" )
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 environment/default_environment="res://default_env.tres"

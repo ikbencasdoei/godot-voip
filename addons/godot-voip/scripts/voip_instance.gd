@@ -3,91 +3,96 @@ class_name VoipInstance
 
 signal received_voice_data
 signal send_voice_data
-signal _updated_sample_format
 
-export var min_packet_lenght_seconds: float = 1.0
 export var custom_voice_audio_stream_player: NodePath
 
-var recording: bool = false
+export var recording: bool = false
+export var listen: bool = false
+export(float, 0.0, 1.0) var input_threshold: = 0.005
 
-var voip_format: int = -1
-var voip_mix_rate: int = -1
-var voip_stereo: bool = true
-
-var _microphone: VoipMicrophone
+var _mic: VoipMic
 var _voice
-var _effect_record: AudioEffectRecord
-var _latest_sample: AudioStreamSample
-var _time_recording: float = 0
+var _effect_capture: AudioEffectCapture
+var _playback: AudioStreamGeneratorPlayback
+var _receive_buffer := PoolRealArray()
 
-func _ready() -> void:
-	_microphone = VoipMicrophone.new()
-	add_child(_microphone)
+func _process(delta: float) -> void:
+	_process_voice()
+	_process_mic()
 
+func create_mic():
+	_mic = VoipMic.new()
+	add_child(_mic)
+	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
+	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
+
+func create_voice():
 	if !custom_voice_audio_stream_player.is_empty():
 		var player = get_node(custom_voice_audio_stream_player)
 		if player != null:
 			if player is AudioStreamPlayer || player is AudioStreamPlayer2D || player is AudioStreamPlayer3D:
 				_voice = player
 			else:
-				push_error("voip_isntance.gd: node:'%s' is not any kind of AudioStreamPlayer!" % custom_voice_audio_stream_player)
+				push_error("node:'%s' is not any kind of AudioStreamPlayer!" % custom_voice_audio_stream_player)
 		else:
-			push_error("voip_isntance.gd: node:'%s' does not exist!" % custom_voice_audio_stream_player)
+			push_error("node:'%s' does not exist!" % custom_voice_audio_stream_player)
 	else:
 		_voice = AudioStreamPlayer.new()
 		add_child(_voice)
 
-	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
-	_effect_record = AudioServer.get_bus_effect(record_bus_idx, 0)
+	var generator := AudioStreamGenerator.new()
+	generator.buffer_length = 0.1
+	_voice.stream = generator
 
-remote func _receive_stream_format(_format: int, _mix_rate: int, _stereo: bool):
-	voip_format = _format
-	voip_mix_rate = _mix_rate
-	voip_stereo = _stereo
-
-	emit_signal("_updated_sample_format")
-
-remote func _send_stream_format():
-	rpc("_receive_stream_format", _latest_sample.format, _latest_sample.mix_rate, _latest_sample.stereo)
-
-remote func _speak(sample_data: PoolByteArray, id: int = -1):
-	emit_signal("received_voice_data", sample_data, id)
-
-	var sample = AudioStreamSample.new()
-	sample.data = sample_data
-
-	if voip_format == -1:
-		rpc("_send_stream_format")
-		yield(self, "_updated_sample_format")
-
-	sample.set_format(voip_format)
-	sample.set_mix_rate(voip_mix_rate)
-	sample.set_stereo(voip_stereo)
-
-	_voice.stream = sample
+	_playback = _voice.get_stream_playback()
 	_voice.play()
 
-func _process(delta: float) -> void:
-	if recording:
-		if _effect_record.is_recording_active():
-			if _time_recording >= min_packet_lenght_seconds:
+remote func _speak(sample_data: PoolRealArray, id: int = -1):
+	if _playback == null:
+		create_voice()
 
-				_effect_record.set_recording_active(false)
-				_latest_sample = _effect_record.get_recording()
+	emit_signal("received_voice_data", sample_data, id)
+	_receive_buffer.append_array(sample_data)
 
-				rpc_unreliable("_speak", _latest_sample.get_data(),  get_tree().get_network_unique_id())
+func _process_voice():
+	if _playback == null:
+		return
 
-				emit_signal("send_voice_data", _latest_sample.get_data())
-
-				_effect_record.set_recording_active(true)
-				_time_recording = 0
-
-			_time_recording += delta
+	for i in range(_playback.get_frames_available()):
+		if _receive_buffer.size() > 0:
+			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
+			_receive_buffer.remove(0)
 		else:
-			_effect_record.set_recording_active(true)
-	else:
-		_effect_record.set_recording_active(false)
+			_playback.push_frame(Vector2.ZERO)
 
+func _process_mic():
+	if recording:
+		if _effect_capture == null:
+			create_mic()
+
+		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
+		if stereo_data.size() > 0:
+
+			var data = PoolRealArray()
+			data.resize(stereo_data.size())
+
+			if input_threshold > 0.0:
+				var max_value = 0.0
+				for i in range(stereo_data.size()):
+					var value = (stereo_data[i].x + stereo_data[i].y) / 2.0
+					max_value = max(value, max_value)
+					data[i] = value
+				if max_value < input_threshold:
+					return
+			else:
+				for i in range(stereo_data.size()):
+					data[i] = (stereo_data[i].x + stereo_data[i].y) / 2.0
+
+			if listen:
+				_speak(data, get_tree().get_network_unique_id())
+
+			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
+			emit_signal("send_voice_data", data)
 
 
 

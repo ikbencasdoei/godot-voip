@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/godot-voip/scripts/voip_instance.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
@@ -6,9 +6,26 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+onready var buttonServer: Button = $MarginContainer/HBoxContainer/VBoxContainer/Server
+onready var buttonClient: Button = $MarginContainer/HBoxContainer/VBoxContainer/Client
+onready var buttonVoice : Button = $MarginContainer/HBoxContainer/VBoxContainer/Voice
+
+onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port
+onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
+onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port
+onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/Listen
+onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
+
+onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/Status
+onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
+onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
+
+onready var voip: VoipInstance = $VoipInstance
+onready var network: Network = $Network
+
 func _ready():
-	$VoipInstance.connect(\"received_voice_data\", self, \"_received_voice_data\")
-	$VoipInstance.connect(\"send_voice_data\", self, \"_send_voice_data\")
+	voip.connect(\"received_voice_data\", self, \"_received_voice_data\")
+	voip.connect(\"send_voice_data\", self, \"_send_voice_data\")
 
 	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
@@ -17,53 +34,105 @@ func _ready():
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
 	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
 
-func _on_Button_server_pressed() -> void:
-	var err = $Network.start_server()
-	if err != OK:
-		$Status.text = \"Failed to create server!\"
+	spinBoxHostPort.value = network.server_port
+	lineEditClientIp.text = network.server_ip
+	spinBoxClientPort.value = network.server_port
+	sliderInputThreshold.value = voip.input_threshold
 
-	$Status.text = \"server started\"
-	$Button_server.disabled = true
-	$Button_client.disabled = true
-	$Button_voice.disabled = false
+func _on_Button_server_pressed() -> void:
+	var err = network.start_server()
+	if err != OK:
+		labelStatus.text = \"Failed to create server!\"
+
+	labelStatus.text = \"server started\"
+	buttonServer.disabled = true
+	buttonClient.disabled = true
+	buttonVoice.disabled = false
+	checkboxListen.disabled = false
+	sliderInputThreshold.editable = true
+	spinBoxInputThreshold.editable = true
+	spinBoxHostPort.editable = false
+	lineEditClientIp.editable = false
+	spinBoxClientPort.editable = false
 
 func _on_Button_client_pressed() -> void:
-	var err = $Network.start_client()
+	var err = network.start_client()
 	if err != OK:
-		$Status.text = \"failed to create client!\"
+		labelStatus.text = \"failed to create client!\"
 
-	$Status.text = \"Connecting...\"
-	$Button_server.disabled = true
-	$Button_client.disabled = true
-	$Button_voice.disabled = false
+	labelStatus.text = \"Connecting...\"
 
 func _on_Button_voice_button_down() -> void:
-	$VoipInstance.recording = true
+	voip.recording = true
 
 func _on_Button_voice_button_up() -> void:
-	$VoipInstance.recording = false
+	voip.recording = false
+
+func _on_Listen_toggled(button_pressed: bool) -> void:
+	voip.listen = button_pressed
+
+func _on_InputThreshold_value_changed(value: float) -> void:
+	voip.input_threshold = value
+	spinBoxInputThreshold.value = value
+
+func _on_Value_value_changed(value: float) -> void:
+	sliderInputThreshold.value = value
+
+func _on_Port_value_changed(value: float) -> void:
+	network.server_port = int(value)
+
+func _on_Ip_text_changed(new_text: String) -> void:
+	network.server_ip = new_text
 
 func _connected_ok():
-	$Status.text = \"Connected ok\"
+	labelStatus.text = \"Connected ok\"
+
+	buttonServer.disabled = true
+	buttonClient.disabled = true
+	buttonVoice.disabled = false
+	checkboxListen.disabled = false
+	sliderInputThreshold.editable = true
+	spinBoxInputThreshold.editable = true
+	spinBoxHostPort.editable = false
+	lineEditClientIp.editable = false
+	spinBoxClientPort.editable = false
 
 func _connected_fail():
-	$Status.text = \"Failed to connect to server!\"
+	labelStatus.text = \"Failed to connect to server!\"
 
 func _server_disconnected():
-	$Status.text = \"Server disconnected\"
+	labelStatus.text = \"Server disconnected\"
 
+	buttonServer.disabled = false
+	buttonClient.disabled = false
+	buttonVoice.disabled = true
+	checkboxListen.disabled = true
+	buttonVoice.pressed = false
+	sliderInputThreshold.editable = false
+	spinBoxInputThreshold.editable = false
+	spinBoxHostPort.editable = true
+	lineEditClientIp.editable = true
+	spinBoxClientPort.editable = true
 
 func _player_connected(_id):
-	$Log.text += \"Player with id: %s connected\\n\" % _id
+	labelLog.text += \"Player with id: %s connected\\n\" % _id
 
 func _player_disconnected(_id):
-	$Log.text += \"Player with id: %s disconnected\\n\" % _id
+	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
-func _received_voice_data(data: PoolByteArray, id: int):
-	$Log.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
+func _received_voice_data(data: PoolRealArray, id: int):
+	labelLog.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
 
-func _send_voice_data(data: PoolByteArray):
-	$Log.text += \"send voice data of size:%s\\n\" % data.size()
+func _send_voice_data(data: PoolRealArray):
+	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
+
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends ScrollContainer
+
+func _on_Log_resized() -> void:
+	scroll_vertical = $Log.rect_size.y
 "
 
 [node name="Demo" type="Control"]
@@ -77,59 +146,237 @@ __meta__ = {
 [node name="Network" type="Node" parent="."]
 script = ExtResource( 2 )
 
-[node name="Button_server" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 44.2765
-margin_right = 173.345
-margin_bottom = 64.2765
+[node name="VoipInstance" type="Node" parent="."]
+script = ExtResource( 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 50
+custom_constants/margin_top = 50
+custom_constants/margin_left = 50
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 974.0
+margin_bottom = 550.0
+custom_constants/separation = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_right = 250.0
+margin_bottom = 500.0
+rect_min_size = Vector2( 250, 0 )
+custom_constants/separation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Server" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_right = 250.0
+margin_bottom = 20.0
 text = "Start server"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button_client" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 80.0
-margin_right = 173.345
-margin_bottom = 100.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 30.0
+margin_right = 250.0
+margin_bottom = 54.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 64.0
+margin_bottom = 19.0
+text = "Host port:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Port" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 68.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+max_value = 65535.0
+rounded = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 64.0
+margin_right = 250.0
+margin_bottom = 68.0
+
+[node name="Client" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 78.0
+margin_right = 250.0
+margin_bottom = 98.0
 text = "Start client"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button_voice" type="Button" parent="."]
-margin_left = 46.3451
-margin_top = 160.0
-margin_right = 173.345
+[node name="HBoxContainer1" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 108.0
+margin_right = 250.0
+margin_bottom = 132.0
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1"]
+margin_top = 5.0
+margin_right = 60.0
+margin_bottom = 19.0
+text = "Server ip:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ip" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1"]
+margin_left = 64.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "127.0.0.1"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 142.0
+margin_right = 250.0
+margin_bottom = 166.0
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+margin_top = 5.0
+margin_right = 74.0
+margin_bottom = 19.0
+text = "Server port:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Port" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+margin_left = 78.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+max_value = 65535.0
+rounded = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 176.0
+margin_right = 250.0
 margin_bottom = 180.0
+
+[node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 190.0
+margin_right = 250.0
+margin_bottom = 214.0
+disabled = true
+text = "Listen"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 224.0
+margin_right = 250.0
+margin_bottom = 248.0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_top = 5.0
+margin_right = 103.0
+margin_bottom = 19.0
+text = "Input threshold:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Value" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 107.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.0
+editable = false
+
+[node name="InputThreshold" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 258.0
+margin_right = 250.0
+margin_bottom = 274.0
+max_value = 0.1
+step = 0.0
+allow_greater = true
+allow_lesser = true
+editable = false
+ticks_on_borders = true
+
+[node name="Voice" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 284.0
+margin_right = 250.0
+margin_bottom = 304.0
 disabled = true
 text = "Speak"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Status" type="Label" parent="."]
-margin_left = 220.0
-margin_top = 44.2765
-margin_right = 370.0
-margin_bottom = 58.2765
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_left = 300.0
+margin_right = 924.0
+margin_bottom = 500.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+margin_right = 624.0
+margin_bottom = 14.0
 text = "Status:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Log" type="Label" parent="."]
-margin_left = 220.0
-margin_top = 100.0
-margin_right = 980.0
-margin_bottom = 340.0
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+margin_top = 18.0
+margin_right = 624.0
+margin_bottom = 500.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = SubResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VoipInstance" type="Node" parent="."]
-script = ExtResource( 1 )
-[connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
-[connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
-[connection signal="button_down" from="Button_voice" to="." method="_on_Button_voice_button_down"]
-[connection signal="button_up" from="Button_voice" to="." method="_on_Button_voice_button_up"]
+[node name="Log" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer"]
+margin_right = 624.0
+margin_bottom = 482.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
+[connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port" to="." method="_on_Port_value_changed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Client" to="." method="_on_Button_client_pressed"]
+[connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip" to="." method="_on_Ip_text_changed"]
+[connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port" to="." method="_on_Port_value_changed"]
+[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Listen" to="." method="_on_Listen_toggled"]
+[connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value" to="." method="_on_Value_value_changed"]
+[connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/InputThreshold" to="." method="_on_InputThreshold_value_changed"]
+[connection signal="button_down" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_down"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
+[connection signal="resized" from="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log" to="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer" method="_on_Log_resized"]
