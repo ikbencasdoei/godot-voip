@@ -129,6 +129,7 @@ __meta__ = {
 
 [node name="VoipInstance" type="Node" parent="."]
 script = ExtResource( 1 )
+
 [connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
 [connection signal="button_down" from="Button_voice" to="." method="_on_Button_voice_button_down"]
