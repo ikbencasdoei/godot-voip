@@ -18,9 +18,20 @@ var _playback: AudioStreamGeneratorPlayback
 var _receive_buffer := PoolRealArray()
 
 func _ready() -> void:
+	create_mic()
+	create_voice()
+
+func _process(delta: float) -> void:
+	_process_input()
+	_process_output()
+
+func create_mic():
 	_mic = VoipMic.new()
 	add_child(_mic)
+	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
+	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
+func create_voice():
 	if !custom_voice_audio_stream_player.is_empty():
 		var player = get_node(custom_voice_audio_stream_player)
 		if player != null:
@@ -33,10 +44,6 @@ func _ready() -> void:
 	else:
 		_voice = AudioStreamPlayer.new()
 		add_child(_voice)
-
-	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
-
-	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
 	var generator := AudioStreamGenerator.new()
 	generator.buffer_length = 0.1
@@ -82,10 +89,6 @@ func _process_output():
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
-
-func _process(delta: float) -> void:
-	_process_input()
-	_process_output()
 
 
 
