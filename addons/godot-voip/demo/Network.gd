@@ -1,14 +1,15 @@
 extends Node
 class_name Network
 
-const SERVER_PORT = 3000
-const MAX_PLAYERS = 20
-const SERVER_IP = "127.0.0.1"
+var server_port := 3000
+var server_ip := "127.0.0.1"
+
+const MAX_PLAYERS := 20
 
 func start_client() -> int:
 	var peer = NetworkedMultiplayerENet.new()
 
-	var err = peer.create_client(SERVER_IP, SERVER_PORT)
+	var err = peer.create_client(server_ip, server_port)
 	if err != OK:
 		return err
 
@@ -19,7 +20,7 @@ func start_client() -> int:
 func start_server() -> int:
 	var peer = NetworkedMultiplayerENet.new()
 
-	var err = peer.create_server(SERVER_PORT, MAX_PLAYERS)
+	var err = peer.create_server(server_port, MAX_PLAYERS)
 
 	if err != OK:
 		return err
