@@ -17,8 +17,8 @@ var _playback: AudioStreamGeneratorPlayback
 var _receive_buffer := PoolRealArray()
 
 func _process(delta: float) -> void:
-	_process_input()
-	_process_output()
+	_process_voice()
+	_process_mic()
 
 func create_mic():
 	_mic = VoipMic.new()
@@ -54,7 +54,7 @@ remote func _speak(sample_data: PoolRealArray, id: int = -1):
 	emit_signal("received_voice_data", sample_data, id)
 	_receive_buffer.append_array(sample_data)
 
-func _process_input():
+func _process_voice():
 	if _playback == null:
 		return
 
@@ -65,7 +65,7 @@ func _process_input():
 		else:
 			_playback.push_frame(Vector2.ZERO)
 
-func _process_output():
+func _process_mic():
 	if recording:
 		if _effect_capture == null:
 			create_mic()
