@@ -17,10 +17,6 @@ var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
 var _receive_buffer := PoolRealArray()
 
-func _ready() -> void:
-	create_mic()
-	create_voice()
-
 func _process(delta: float) -> void:
 	_process_input()
 	_process_output()
@@ -53,10 +49,16 @@ func create_voice():
 	_voice.play()
 
 remote func _speak(sample_data: PoolRealArray, id: int = -1):
+	if _playback == null:
+		create_voice()
+
 	emit_signal("received_voice_data", sample_data, id)
 	_receive_buffer.append_array(sample_data)
 
 func _process_input():
+	if _playback == null:
+		return
+
 	for i in range(_playback.get_frames_available()):
 		if _receive_buffer.size() > 0:
 			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
@@ -66,6 +68,9 @@ func _process_input():
 
 func _process_output():
 	if recording:
+		if _effect_capture == null:
+			create_mic()
+
 		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
 
