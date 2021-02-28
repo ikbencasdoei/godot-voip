@@ -5,8 +5,8 @@
 Godot-voip is a Godot addon which makes it very easy to setup a real time voice chat system in your Godot game. This addon also includes a demo project.
 
 ## Compatibility
-* 2.0: Godot 3.2.x
-* 3.0: Godot >=3.2.4
+* 2.0: Godot 3.2
+* 3.0: from Godot 3.2.4
 
 ## Setup
 
