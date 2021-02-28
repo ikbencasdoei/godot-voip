@@ -8,7 +8,7 @@ export var custom_voice_audio_stream_player: NodePath
 
 export var recording: bool = false
 export var listen: bool = false
-export(float, 0.0, 1.0) var input_threshold: = 0.01
+export(float, 0.0, 1.0) var input_threshold: = 0.005
 
 var _mic: VoipMic
 var _voice
