@@ -20,14 +20,14 @@ _global_script_classes=[ {
 "path": "res://addons/godot-voip/scripts/voip_instance.gd"
 }, {
 "base": "AudioStreamPlayer",
-"class": "VoipMicrophone",
+"class": "VoipMic",
 "language": "GDScript",
-"path": "res://addons/godot-voip/scripts/voip_microphone.gd"
+"path": "res://addons/godot-voip/scripts/voip_mic.gd"
 } ]
 _global_script_class_icons={
 "Network": "",
 "VoipInstance": "",
-"VoipMicrophone": ""
+"VoipMic": ""
 }
 
 [application]

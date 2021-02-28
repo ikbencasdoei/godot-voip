@@ -1,12 +1,12 @@
 extends AudioStreamPlayer
-class_name VoipMicrophone
+class_name VoipMic
 
 func _ready() -> void:
 	var current_number = 0
-	while AudioServer.get_bus_index("VoipMicrophoneRecorder" + str(current_number)) != -1:
+	while AudioServer.get_bus_index("VoipMicRecorder" + str(current_number)) != -1:
 		current_number += 1
 
-	var bus_name = "VoipMicrophoneRecorder" + str(current_number)
+	var bus_name = "VoipMicRecorder" + str(current_number)
 	var idx = AudioServer.bus_count
 
 	AudioServer.add_bus(idx)

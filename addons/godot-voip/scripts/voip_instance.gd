@@ -11,15 +11,15 @@ export var recording: bool = false
 export var listen: bool = false
 export(float, 0.0, 1.0) var input_threshold: = 0.01
 
-var _microphone: VoipMicrophone
+var _mic: VoipMic
 var _voice
 var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
 var _receive_buffer := PoolRealArray()
 
 func _ready() -> void:
-	_microphone = VoipMicrophone.new()
-	add_child(_microphone)
+	_mic = VoipMic.new()
+	add_child(_mic)
 
 	if !custom_voice_audio_stream_player.is_empty():
 		var player = get_node(custom_voice_audio_stream_player)
@@ -34,7 +34,7 @@ func _ready() -> void:
 		_voice = AudioStreamPlayer.new()
 		add_child(_voice)
 
-	var record_bus_idx = AudioServer.get_bus_index(_microphone.bus)
+	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
 
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
