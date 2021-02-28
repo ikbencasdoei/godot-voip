@@ -38,8 +38,10 @@ func _ready() -> void:
 
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
+	var generator := AudioStreamGenerator.new()
+	generator.buffer_length = 0.1
+	_voice.stream = generator
 
-	_voice.stream = AudioStreamGenerator.new()
 	_playback = _voice.get_stream_playback()
 	_voice.play()
 
