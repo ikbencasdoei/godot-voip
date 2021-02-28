@@ -3,7 +3,6 @@ class_name VoipInstance
 
 signal received_voice_data
 signal send_voice_data
-signal _updated_sample_format
 
 export var custom_voice_audio_stream_player: NodePath
 
