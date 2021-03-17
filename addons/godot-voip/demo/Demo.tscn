@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/godot-voip/scripts/voip_instance.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
+[ext_resource path="res://icon.svg" type="Texture" id=3]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -9,6 +10,7 @@ script/source = "extends Control
 onready var buttonServer: Button = $MarginContainer/HBoxContainer/VBoxContainer/Server
 onready var buttonClient: Button = $MarginContainer/HBoxContainer/VBoxContainer/Client
 onready var buttonVoice : Button = $MarginContainer/HBoxContainer/VBoxContainer/Voice
+onready var buttonDisconnect : Button = $MarginContainer/HBoxContainer/VBoxContainer/Disconnect
 
 onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port
 onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
@@ -44,16 +46,7 @@ func _on_Button_server_pressed() -> void:
 	if err != OK:
 		labelStatus.text = \"Failed to create server!\"
 
-	labelStatus.text = \"server started\"
-	buttonServer.disabled = true
-	buttonClient.disabled = true
-	buttonVoice.disabled = false
-	checkboxListen.disabled = false
-	sliderInputThreshold.editable = true
-	spinBoxInputThreshold.editable = true
-	spinBoxHostPort.editable = false
-	lineEditClientIp.editable = false
-	spinBoxClientPort.editable = false
+	ui_transition()
 
 func _on_Button_client_pressed() -> void:
 	var err = network.start_client()
@@ -61,6 +54,10 @@ func _on_Button_client_pressed() -> void:
 		labelStatus.text = \"failed to create client!\"
 
 	labelStatus.text = \"Connecting...\"
+
+func _on_Disconnect_pressed() -> void:
+	network.stop()
+	ui_reset()
 
 func _on_Button_voice_button_down() -> void:
 	voip.recording = true
@@ -86,33 +83,15 @@ func _on_Ip_text_changed(new_text: String) -> void:
 
 func _connected_ok():
 	labelStatus.text = \"Connected ok\"
-
-	buttonServer.disabled = true
-	buttonClient.disabled = true
-	buttonVoice.disabled = false
-	checkboxListen.disabled = false
-	sliderInputThreshold.editable = true
-	spinBoxInputThreshold.editable = true
-	spinBoxHostPort.editable = false
-	lineEditClientIp.editable = false
-	spinBoxClientPort.editable = false
+	ui_transition()
 
 func _connected_fail():
 	labelStatus.text = \"Failed to connect to server!\"
 
 func _server_disconnected():
 	labelStatus.text = \"Server disconnected\"
+	ui_reset()
 
-	buttonServer.disabled = false
-	buttonClient.disabled = false
-	buttonVoice.disabled = true
-	checkboxListen.disabled = true
-	buttonVoice.pressed = false
-	sliderInputThreshold.editable = false
-	spinBoxInputThreshold.editable = false
-	spinBoxHostPort.editable = true
-	lineEditClientIp.editable = true
-	spinBoxClientPort.editable = true
 
 func _player_connected(_id):
 	labelLog.text += \"Player with id: %s connected\\n\" % _id
@@ -126,6 +105,31 @@ func _received_voice_data(data: PoolRealArray, id: int):
 func _send_voice_data(data: PoolRealArray):
 	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
 
+func ui_transition():
+	labelStatus.text = \"server started\"
+	buttonServer.disabled = true
+	buttonClient.disabled = true
+	buttonVoice.disabled = false
+	buttonDisconnect.disabled = false
+	checkboxListen.disabled = false
+	sliderInputThreshold.editable = true
+	spinBoxInputThreshold.editable = true
+	spinBoxHostPort.editable = false
+	lineEditClientIp.editable = false
+	spinBoxClientPort.editable = false
+
+func ui_reset():
+	buttonServer.disabled = false
+	buttonClient.disabled = false
+	buttonVoice.disabled = true
+	buttonDisconnect.disabled = true
+	checkboxListen.disabled = true
+	buttonVoice.pressed = false
+	sliderInputThreshold.editable = false
+	spinBoxInputThreshold.editable = false
+	spinBoxHostPort.editable = true
+	lineEditClientIp.editable = true
+	spinBoxClientPort.editable = true
 "
 
 [sub_resource type="GDScript" id=2]
@@ -164,7 +168,7 @@ __meta__ = {
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 974.0
-margin_bottom = 550.0
+margin_bottom = 564.0
 custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
@@ -172,7 +176,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_right = 250.0
-margin_bottom = 500.0
+margin_bottom = 514.0
 rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
@@ -334,10 +338,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Disconnect" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 314.0
+margin_right = 250.0
+margin_bottom = 334.0
+disabled = true
+text = "Disconnect"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 344.0
+margin_right = 250.0
+margin_bottom = 514.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer"]
+margin_left = 50.0
+margin_top = 10.0
+margin_right = 200.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 150, 150 )
+texture = ExtResource( 3 )
+expand = true
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_left = 300.0
 margin_right = 924.0
-margin_bottom = 500.0
+margin_bottom = 514.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -352,7 +384,7 @@ __meta__ = {
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
-margin_bottom = 500.0
+margin_bottom = 514.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = SubResource( 2 )
@@ -362,7 +394,7 @@ __meta__ = {
 
 [node name="Log" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer"]
 margin_right = 624.0
-margin_bottom = 482.0
+margin_bottom = 496.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -379,4 +411,5 @@ __meta__ = {
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/InputThreshold" to="." method="_on_InputThreshold_value_changed"]
 [connection signal="button_down" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_down"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Disconnect" to="." method="_on_Disconnect_pressed"]
 [connection signal="resized" from="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log" to="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer" method="_on_Log_resized"]
