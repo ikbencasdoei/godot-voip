@@ -29,3 +29,7 @@ func start_server() -> int:
 
 	return OK
 
+func stop():
+	if get_tree().network_peer != null:
+		get_tree().network_peer.close_connection()
+
