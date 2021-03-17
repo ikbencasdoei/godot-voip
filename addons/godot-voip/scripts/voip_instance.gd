@@ -81,17 +81,14 @@ func _process_mic():
 			var data = PoolRealArray()
 			data.resize(stereo_data.size())
 
-			if input_threshold > 0.0:
-				var max_value = 0.0
-				for i in range(stereo_data.size()):
-					var value = (stereo_data[i].x + stereo_data[i].y) / 2.0
-					max_value = max(value, max_value)
-					data[i] = value
-				if max_value < input_threshold:
-					return
-			else:
-				for i in range(stereo_data.size()):
-					data[i] = (stereo_data[i].x + stereo_data[i].y) / 2.0
+
+			var max_value = 0.0
+			for i in range(stereo_data.size()):
+				var value = (stereo_data[i].x + stereo_data[i].y) / 2.0
+				max_value = max(value, max_value)
+				data[i] = value
+			if max_value < input_threshold:
+				return
 
 			if listen:
 				_speak(data, get_tree().get_network_unique_id())
