@@ -15,6 +15,7 @@ var _voice
 var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
 var _receive_buffer := PoolRealArray()
+var _prev_frame_recording = false
 
 func _process(delta: float) -> void:
 	_process_voice()
@@ -70,6 +71,10 @@ func _process_mic():
 		if _effect_capture == null:
 			create_mic()
 
+		if _prev_frame_recording == false:
+			_effect_capture.clear_buffer()
+
+
 		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
 
@@ -93,6 +98,8 @@ func _process_mic():
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
 			emit_signal("send_voice_data", data)
+
+	_prev_frame_recording = recording
 
 
 
