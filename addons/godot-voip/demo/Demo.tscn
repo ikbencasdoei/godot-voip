@@ -45,6 +45,7 @@ func _on_Button_server_pressed() -> void:
 	var err = network.start_server()
 	if err != OK:
 		labelStatus.text = \"Failed to create server!\"
+		return
 
 	ui_transition()
 
@@ -52,6 +53,7 @@ func _on_Button_client_pressed() -> void:
 	var err = network.start_client()
 	if err != OK:
 		labelStatus.text = \"failed to create client!\"
+		return
 
 	labelStatus.text = \"Connecting...\"
 
