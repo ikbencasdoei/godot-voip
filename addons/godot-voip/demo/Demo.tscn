@@ -47,6 +47,8 @@ func _on_Button_server_pressed() -> void:
 		labelStatus.text = \"Failed to create server!\"
 		return
 
+	labelStatus.text = \"server started\"
+
 	ui_transition()
 
 func _on_Button_client_pressed() -> void:
@@ -108,7 +110,6 @@ func _send_voice_data(data: PoolRealArray):
 	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
 
 func ui_transition():
-	labelStatus.text = \"server started\"
 	buttonServer.disabled = true
 	buttonClient.disabled = true
 	buttonVoice.disabled = false
