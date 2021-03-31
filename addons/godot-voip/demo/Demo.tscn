@@ -18,7 +18,7 @@ onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxCont
 onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/Listen
 onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
 
-onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/Status
+onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/Status
 onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
 onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
@@ -377,10 +377,22 @@ margin_bottom = 500.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_right = 624.0
 margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+margin_right = 43.0
+margin_bottom = 14.0
 text = "Status:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+margin_left = 47.0
+margin_right = 47.0
+margin_bottom = 14.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
