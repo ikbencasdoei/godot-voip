@@ -1,5 +1,5 @@
 extends Node
-class_name VoipInstance
+class_name VoiceInstance
 
 signal received_voice_data
 signal send_voice_data
@@ -10,7 +10,7 @@ export var recording: bool = false
 export var listen: bool = false
 export(float, 0.0, 1.0) var input_threshold: = 0.005
 
-var _mic: VoipMic
+var _mic: VoiceMic
 var _voice
 var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
@@ -22,7 +22,7 @@ func _process(delta: float) -> void:
 	_process_mic()
 
 func create_mic():
-	_mic = VoipMic.new()
+	_mic = VoiceMic.new()
 	add_child(_mic)
 	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)

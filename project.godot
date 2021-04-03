@@ -15,19 +15,19 @@ _global_script_classes=[ {
 "path": "res://addons/godot-voip/demo/Network.gd"
 }, {
 "base": "Node",
-"class": "VoipInstance",
+"class": "VoiceInstance",
 "language": "GDScript",
-"path": "res://addons/godot-voip/scripts/voip_instance.gd"
+"path": "res://addons/godot-voip/scripts/voice_instance.gd"
 }, {
 "base": "AudioStreamPlayer",
-"class": "VoipMic",
+"class": "VoiceMic",
 "language": "GDScript",
-"path": "res://addons/godot-voip/scripts/voip_mic.gd"
+"path": "res://addons/godot-voip/scripts/voice_mic.gd"
 } ]
 _global_script_class_icons={
 "Network": "",
-"VoipInstance": "",
-"VoipMic": ""
+"VoiceInstance": "",
+"VoiceMic": ""
 }
 
 [application]
@@ -46,7 +46,7 @@ enable_audio_input=true
 
 [editor_plugins]
 
-enabled=PoolStringArray( "godot-voip" )
+enabled=PoolStringArray( "res://addons/godot-voip/plugin.cfg" )
 
 [rendering]
 

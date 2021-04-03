@@ -1,5 +1,5 @@
 extends AudioStreamPlayer
-class_name VoipMic
+class_name VoiceMic
 
 func _ready() -> void:
 	var current_number = 0
