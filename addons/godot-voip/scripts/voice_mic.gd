@@ -3,10 +3,10 @@ class_name VoiceMic
 
 func _ready() -> void:
 	var current_number = 0
-	while AudioServer.get_bus_index("VoipMicRecorder" + str(current_number)) != -1:
+	while AudioServer.get_bus_index("VoiceMicRecorder" + str(current_number)) != -1:
 		current_number += 1
 
-	var bus_name = "VoipMicRecorder" + str(current_number)
+	var bus_name = "VoiceMicRecorder" + str(current_number)
 	var idx = AudioServer.bus_count
 
 	AudioServer.add_bus(idx)

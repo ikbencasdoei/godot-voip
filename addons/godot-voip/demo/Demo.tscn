@@ -22,12 +22,12 @@ onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/H
 onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
 onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
-onready var voip: VoiceInstance = $VoiceInstance
+onready var voice: VoiceInstance = $VoiceInstance
 onready var network: Network = $Network
 
 func _ready():
-	voip.connect(\"received_voice_data\", self, \"_received_voice_data\")
-	voip.connect(\"send_voice_data\", self, \"_send_voice_data\")
+	voice.connect(\"received_voice_data\", self, \"_received_voice_data\")
+	voice.connect(\"send_voice_data\", self, \"_send_voice_data\")
 
 	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
@@ -39,7 +39,7 @@ func _ready():
 	spinBoxHostPort.value = network.server_port
 	lineEditClientIp.text = network.server_ip
 	spinBoxClientPort.value = network.server_port
-	sliderInputThreshold.value = voip.input_threshold
+	sliderInputThreshold.value = voice.input_threshold
 
 func _on_Button_server_pressed() -> void:
 	var err = network.start_server()
@@ -64,16 +64,16 @@ func _on_Disconnect_pressed() -> void:
 	ui_reset()
 
 func _on_Button_voice_button_down() -> void:
-	voip.recording = true
+	voice.recording = true
 
 func _on_Button_voice_button_up() -> void:
-	voip.recording = false
+	voice.recording = false
 
 func _on_Listen_toggled(button_pressed: bool) -> void:
-	voip.listen = button_pressed
+	voice.listen = button_pressed
 
 func _on_InputThreshold_value_changed(value: float) -> void:
-	voip.input_threshold = value
+	voice.input_threshold = value
 	spinBoxInputThreshold.value = value
 
 func _on_Value_value_changed(value: float) -> void:
