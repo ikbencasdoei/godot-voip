@@ -79,7 +79,7 @@ func _process_voice():
 			for value in values:
 				average += value
 
-			average /= values.size()
+			average /= float(values.size())
 
 			_playback.push_frame(Vector2(average, average))
 		else:
