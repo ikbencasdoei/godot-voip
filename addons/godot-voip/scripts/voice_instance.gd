@@ -17,7 +17,7 @@ var _playback: AudioStreamGeneratorPlayback
 var _receive_buffers := {}
 var _prev_frame_recording = false
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	_process_voice()
 	_process_mic()
 
