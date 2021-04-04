@@ -14,7 +14,7 @@ var _mic: VoiceMic
 var _voice
 var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
-var _receive_buffer := PoolRealArray()
+var _receive_buffers := {}
 var _prev_frame_recording = false
 
 func _process(delta: float) -> void:
@@ -48,21 +48,40 @@ func create_voice():
 	_playback = _voice.get_stream_playback()
 	_voice.play()
 
-remote func _speak(sample_data: PoolRealArray, id: int = -1):
+remote func _speak(sample_data: PoolRealArray, id: int):
 	if _playback == null:
 		create_voice()
 
 	emit_signal("received_voice_data", sample_data, id)
-	_receive_buffer.append_array(sample_data)
+
+	if !_receive_buffers.has(id):
+		_receive_buffers[id] = PoolRealArray()
+
+	var buffer = _receive_buffers[id]
+	buffer.append_array(sample_data)
+	_receive_buffers[id] = buffer
 
 func _process_voice():
 	if _playback == null:
 		return
 
-	for i in range(_playback.get_frames_available()):
-		if _receive_buffer.size() > 0:
-			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
-			_receive_buffer.remove(0)
+	for a in range(_playback.get_frames_available()):
+		var values = []
+		for i in _receive_buffers:
+			if _receive_buffers[i].size() > 0:
+				var buffer = _receive_buffers[i]
+				values.append(_receive_buffers[i][0])
+				buffer.remove(0)
+				_receive_buffers[i] = buffer
+
+		if values.size() > 0:
+			var average: float
+			for value in values:
+				average += value
+
+			average /= values.size()
+
+			_playback.push_frame(Vector2(average, average))
 		else:
 			_playback.push_frame(Vector2.ZERO)
 
@@ -74,13 +93,11 @@ func _process_mic():
 		if _prev_frame_recording == false:
 			_effect_capture.clear_buffer()
 
-
-		var stereo_data = _effect_capture.get_buffer(_effect_capture.get_frames_available())
+		var stereo_data: PoolVector2Array = _effect_capture.get_buffer(_effect_capture.get_frames_available())
 		if stereo_data.size() > 0:
 
 			var data = PoolRealArray()
 			data.resize(stereo_data.size())
-
 
 			var max_value = 0.0
 			for i in range(stereo_data.size()):
