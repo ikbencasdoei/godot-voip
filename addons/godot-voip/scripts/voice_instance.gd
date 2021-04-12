@@ -24,7 +24,7 @@ func _physics_process(delta: float) -> void:
 func create_mic():
 	_mic = VoiceMic.new()
 	add_child(_mic)
-	var record_bus_idx = AudioServer.get_bus_index(_mic.bus)
+	var record_bus_idx := AudioServer.get_bus_index(_mic.bus)
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
 func create_voice():
@@ -57,7 +57,7 @@ remote func _speak(sample_data: PoolRealArray, id: int):
 	if !_receive_buffers.has(id):
 		_receive_buffers[id] = PoolRealArray()
 
-	var buffer = _receive_buffers[id]
+	var buffer: PoolRealArray = _receive_buffers[id]
 	buffer.append_array(sample_data)
 	_receive_buffers[id] = buffer
 
@@ -69,7 +69,7 @@ func _process_voice():
 		var values = []
 		for i in _receive_buffers:
 			if _receive_buffers[i].size() > 0:
-				var buffer = _receive_buffers[i]
+				var buffer: PoolRealArray = _receive_buffers[i]
 				values.append(_receive_buffers[i][0])
 				buffer.remove(0)
 				_receive_buffers[i] = buffer
@@ -99,9 +99,9 @@ func _process_mic():
 			var data = PoolRealArray()
 			data.resize(stereo_data.size())
 
-			var max_value = 0.0
+			var max_value := 0.0
 			for i in range(stereo_data.size()):
-				var value = (stereo_data[i].x + stereo_data[i].y) / 2.0
+				var value := (stereo_data[i].x + stereo_data[i].y) / 2.0
 				max_value = max(value, max_value)
 				data[i] = value
 			if max_value < input_threshold:
