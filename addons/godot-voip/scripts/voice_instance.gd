@@ -18,7 +18,9 @@ var _receive_buffers := {}
 var _prev_frame_recording = false
 
 func _physics_process(delta: float) -> void:
-	_process_voice()
+	if _playback != null:
+		_process_voice()
+
 	_process_mic()
 
 func create_mic():
@@ -62,9 +64,6 @@ remote func _speak(sample_data: PoolRealArray, id: int):
 	_receive_buffers[id] = buffer
 
 func _process_voice():
-	if _playback == null:
-		return
-
 	for a in range(_playback.get_frames_available()):
 		var values = []
 		for i in _receive_buffers:
