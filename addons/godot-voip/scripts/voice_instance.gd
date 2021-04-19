@@ -69,13 +69,22 @@ remote func _speak(sample_data: PoolRealArray, id: int):
 		_receive_buffers[id] = buffer
 
 func _process_voice():
+	if _playback.get_frames_available() < 1:
+		return
+
 	if !multiple_transmitters_mode:
-		for i in range(_playback.get_frames_available()):
-			if _receive_buffer.size() > 0:
-				_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
-				_receive_buffer.remove(0)
-			else:
-				_playback.push_frame(Vector2.ZERO)
+		if _receive_buffer.size() > 0:
+			for i in range(_playback.get_frames_available()):
+				if _receive_buffer.size() > 0:
+					_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
+					_receive_buffer.remove(0)
+				else:
+					_playback.push_frame(Vector2.ZERO)
+		else:
+			var buffer = PoolVector2Array()
+			buffer.resize(_playback.get_frames_available())
+			_playback.push_buffer(buffer)
+
 	else:
 		for a in range(_playback.get_frames_available()):
 			var values = []
