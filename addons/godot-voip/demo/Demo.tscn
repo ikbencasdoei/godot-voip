@@ -114,7 +114,6 @@ func _player_disconnected(_id):
 
 func _received_voice_data(data: PoolRealArray, id: int):
 	labelLog.add_text(\"received voice data of size:%s from id:%s\\n\" % [data.size(), id])
-	print(labelLog.get_line_count())
 
 func _send_voice_data(data: PoolRealArray):
 	labelLog.add_text(\"send voice data of size:%s\\n\" % data.size())
