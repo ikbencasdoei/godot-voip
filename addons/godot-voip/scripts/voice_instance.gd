@@ -73,14 +73,11 @@ func _process_voice():
 		return
 
 	if !multiple_transmitters_mode:
-		if _receive_buffer.size() > 0:
-			for i in range(_playback.get_frames_available()):
-				if _receive_buffer.size() > 0:
-					_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
-					_receive_buffer.remove(0)
-				else:
-					_playback.push_frame(Vector2.ZERO)
-		else:
+		for i in range(_playback.get_frames_available() & _receive_buffer.size()):
+			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
+			_receive_buffer.remove(0)
+
+		if _playback.get_frames_available() > 0:
 			var buffer = PoolVector2Array()
 			buffer.resize(_playback.get_frames_available())
 			_playback.push_buffer(buffer)
