@@ -1,4 +1,4 @@
-# Godot VoIP 🎤📡
+# Godot VoIP 🎙️🌐
 ![logo](https://raw.githubusercontent.com/casbrugman/godot-voip/master/icon.svg "Logo")
 
 Godot-voip is a Godot addon which makes it very easy to setup a real time voice chat system in your Godot game. This addon also includes a demo project.
