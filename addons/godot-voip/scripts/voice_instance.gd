@@ -73,7 +73,7 @@ func _process_voice():
 		return
 
 	if !multiple_transmitters_mode:
-		for i in range(_playback.get_frames_available() & _receive_buffer.size()):
+		for i in range(min(_playback.get_frames_available(), _receive_buffer.size())):
 			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
 			_receive_buffer.remove(0)
 
