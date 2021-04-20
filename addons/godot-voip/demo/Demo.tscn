@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/godot-voip/scripts/voice_instance.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
@@ -20,7 +20,7 @@ onready var checkBoxToggle: CheckBox = $MarginContainer/HBoxContainer/VBoxContai
 onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
 
 onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/Status
-onready var labelLog: Label = $MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log
+onready var labelLog: RichTextLabel = $MarginContainer/HBoxContainer/VBoxContainer2/Log
 onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
 onready var voice: VoiceInstance = $VoiceInstance
@@ -113,10 +113,12 @@ func _player_disconnected(_id):
 	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
 func _received_voice_data(data: PoolRealArray, id: int):
-	labelLog.text += \"received voice data of size:%s from id:%s\\n\" % [data.size(), id]
+	labelLog.add_text(\"received voice data of size:%s from id:%s\\n\" % [data.size(), id])
+	print(labelLog.get_line_count())
 
 func _send_voice_data(data: PoolRealArray):
-	labelLog.text += \"send voice data of size:%s\\n\" % data.size()
+	labelLog.add_text(\"send voice data of size:%s\\n\" % data.size())
+
 
 func ui_transition():
 	buttonServer.disabled = true
@@ -144,13 +146,6 @@ func ui_reset():
 	spinBoxHostPort.editable = true
 	lineEditClientIp.editable = true
 	spinBoxClientPort.editable = true
-"
-
-[sub_resource type="GDScript" id=2]
-script/source = "extends ScrollContainer
-
-func _on_Log_resized() -> void:
-	scroll_vertical = $Log.rect_size.y
 "
 
 [node name="Demo" type="Control"]
@@ -419,25 +414,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
 margin_bottom = 528.0
-size_flags_horizontal = 3
+focus_mode = 2
 size_flags_vertical = 3
-script = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Log" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer"]
-margin_right = 624.0
-margin_bottom = 510.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
+scroll_following = true
+selection_enabled = true
 
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port" to="." method="_on_Port_value_changed"]
@@ -452,4 +436,3 @@ __meta__ = {
 [connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Voice_toggled"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Disconnect" to="." method="_on_Disconnect_pressed"]
-[connection signal="resized" from="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer/Log" to="MarginContainer/HBoxContainer/VBoxContainer2/ScrollContainer" method="_on_Log_resized"]
