@@ -7,9 +7,9 @@ var server_ip := "127.0.0.1"
 const MAX_PLAYERS := 20
 
 func start_client() -> int:
-	var peer := NetworkedMultiplayerENet.new()
+	var peer := WebSocketClient.new()
 
-	var err := peer.create_client(server_ip, server_port)
+	var err := peer.connect_to_url("ws://%s:%s" % [server_ip, server_port], PoolStringArray(), true)
 	if err != OK:
 		return err
 
@@ -18,9 +18,9 @@ func start_client() -> int:
 	return OK
 
 func start_server() -> int:
-	var peer := NetworkedMultiplayerENet.new()
+	var peer := WebSocketServer.new()
 
-	var err := peer.create_server(server_port, MAX_PLAYERS)
+	var err := peer.listen(server_port, PoolStringArray(), true)
 
 	if err != OK:
 		return err
@@ -31,5 +31,8 @@ func start_server() -> int:
 
 func stop():
 	if get_tree().network_peer != null:
-		get_tree().network_peer.close_connection()
+		if get_tree().network_peer is WebSocketClient:
+			get_tree().network_peer.disconnect_from_host()
+		elif get_tree().network_peer is WebSocketServer:
+			get_tree().network_peer.stop()
 
