@@ -7,9 +7,9 @@ var server_ip := "127.0.0.1"
 const MAX_PLAYERS := 20
 
 func start_client() -> int:
-	var peer = NetworkedMultiplayerENet.new()
+	var peer := NetworkedMultiplayerENet.new()
 
-	var err = peer.create_client(server_ip, server_port)
+	var err := peer.create_client(server_ip, server_port)
 	if err != OK:
 		return err
 
@@ -18,9 +18,9 @@ func start_client() -> int:
 	return OK
 
 func start_server() -> int:
-	var peer = NetworkedMultiplayerENet.new()
+	var peer := NetworkedMultiplayerENet.new()
 
-	var err = peer.create_server(server_port, MAX_PLAYERS)
+	var err := peer.create_server(server_port, MAX_PLAYERS)
 
 	if err != OK:
 		return err
