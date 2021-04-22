@@ -46,7 +46,7 @@ func _ready():
 func _on_Button_server_pressed() -> void:
 	var err = network.start_server()
 	if err != OK:
-		labelStatus.text = \"Failed to create server!\"
+		labelStatus.text = \"Failed to create server! Error: %s\" % err
 		return
 
 	labelStatus.text = \"server started\"
@@ -56,7 +56,7 @@ func _on_Button_server_pressed() -> void:
 func _on_Button_client_pressed() -> void:
 	var err = network.start_client()
 	if err != OK:
-		labelStatus.text = \"failed to create client!\"
+		labelStatus.text = \"Failed to create client! Error: %s\" % err
 		return
 
 	labelStatus.text = \"Connecting...\"
@@ -183,7 +183,7 @@ __meta__ = {
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 974.0
-margin_bottom = 588.0
+margin_bottom = 578.0
 custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
@@ -191,7 +191,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_right = 250.0
-margin_bottom = 538.0
+margin_bottom = 528.0
 rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
@@ -395,7 +395,7 @@ __meta__ = {
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 378.0
 margin_right = 250.0
-margin_bottom = 538.0
+margin_bottom = 528.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -404,9 +404,8 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer"]
 margin_left = 50.0
-margin_top = 5.0
 margin_right = 200.0
-margin_bottom = 155.0
+margin_bottom = 150.0
 rect_min_size = Vector2( 150, 150 )
 texture = ExtResource( 3 )
 expand = true
@@ -415,7 +414,7 @@ stretch_mode = 5
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_left = 300.0
 margin_right = 924.0
-margin_bottom = 538.0
+margin_bottom = 528.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -442,7 +441,7 @@ __meta__ = {
 [node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
-margin_bottom = 538.0
+margin_bottom = 528.0
 focus_mode = 2
 size_flags_vertical = 3
 scroll_following = true
