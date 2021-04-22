@@ -47,6 +47,11 @@ func _on_Button_server_pressed() -> void:
 	var err = network.start_server()
 	if err != OK:
 		labelStatus.text = \"Failed to create server! Error: %s\" % err
+
+		if err == FAILED && OS.get_name() == \"HTML5\":
+			labelStatus.text += \", Starting a server is not supported on HTML5.\"
+
+
 		return
 
 	labelStatus.text = \"server started\"
