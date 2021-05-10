@@ -3,6 +3,8 @@ class_name VoiceOrchestrator
 
 signal received_voice_data
 signal send_voice_data
+signal created_instance
+signal removed_instance
 
 export var recording: bool = false setget _set_recording
 export var listen: bool = false setget _set_listen
@@ -46,6 +48,8 @@ func create_instance(id: int) -> void:
 
 	add_child(instance)
 
+	emit_signal("created_instance", id)
+
 func remove_instance(id: int) -> void:
 	var instance: VoiceInstance = _instances[id]
 
@@ -55,6 +59,8 @@ func remove_instance(id: int) -> void:
 	instance.queue_free()
 
 	_instances.erase(id)
+
+	emit_signal("removed_instance", id)
 
 func reset() -> void:
 	for id in _instances.keys():
