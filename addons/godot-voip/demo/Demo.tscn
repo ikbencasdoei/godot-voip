@@ -26,7 +26,7 @@ onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBox
 onready var voice: VoiceOrchestrator = $VoiceOrchestrator
 onready var network: Network = $Network
 
-func _ready():
+func _ready() -> void:
 	voice.connect(\"received_voice_data\", self, \"_received_voice_data\")
 	voice.connect(\"send_voice_data\", self, \"_send_voice_data\")
 
@@ -98,33 +98,32 @@ func _on_Port_value_changed(value: float) -> void:
 func _on_Ip_text_changed(new_text: String) -> void:
 	network.server_ip = new_text
 
-func _connected_ok():
+func _connected_ok() -> void:
 	labelStatus.text = \"Connected ok\"
 	ui_transition()
 
-func _connected_fail():
+func _connected_fail() -> void:
 	labelStatus.text = \"Failed to connect to server!\"
 	ui_reset()
 
-func _server_disconnected():
+func _server_disconnected() -> void:
 	labelStatus.text = \"Server disconnected\"
 	ui_reset()
 
-
-func _player_connected(_id):
+func _player_connected(_id) -> void:
 	labelLog.text += \"Player with id: %s connected\\n\" % _id
 
-func _player_disconnected(_id):
+func _player_disconnected(_id) -> void:
 	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
-func _received_voice_data(data: PoolRealArray, id: int):
+func _received_voice_data(data: PoolRealArray, id: int) -> void:
 	labelLog.add_text(\"received voice data of size:%s from id:%s\\n\" % [data.size(), id])
 
-func _send_voice_data(data: PoolRealArray):
+func _send_voice_data(data: PoolRealArray) -> void:
 	labelLog.add_text(\"send voice data of size:%s\\n\" % data.size())
 
 
-func ui_transition():
+func ui_transition() -> void:
 	buttonServer.disabled = true
 	buttonClient.disabled = true
 	buttonVoice.disabled = false
@@ -137,7 +136,7 @@ func ui_transition():
 	lineEditClientIp.editable = false
 	spinBoxClientPort.editable = false
 
-func ui_reset():
+func ui_reset() -> void:
 	buttonServer.disabled = false
 	buttonClient.disabled = false
 	buttonVoice.disabled = true

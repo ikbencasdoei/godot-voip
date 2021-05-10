@@ -29,7 +29,7 @@ func start_server() -> int:
 
 	return OK
 
-func stop():
+func stop() -> void:
 	if get_tree().network_peer != null:
 		if get_tree().network_peer is WebSocketClient:
 			get_tree().network_peer.disconnect_from_host()
