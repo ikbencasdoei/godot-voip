@@ -13,7 +13,7 @@ func _enter_tree() -> void:
 		"VoiceOrchestrator",
 		"Node",
 		preload("res://addons/godot-voip/scripts/voice_orchestrator.gd"),
-		preload("res://addons/godot-voip/icons/VoiceInstance.svg")
+		preload("res://addons/godot-voip/icons/VoiceOrchestrator.svg")
 	)
 
 func _exit_tree() -> void:
