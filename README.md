@@ -44,3 +44,7 @@ This node implements a single voice connection.
 ## VoiceOrchestrator
 This node implements multiple voice connections. It will automatically spawn new VoiceInstances when a player connects to the server and will remove them again after they disconnect.
 Interfacing with a `VoiceOrchestrator` is the same as with a `VoiceInstance`. **Does not support a custom `AudioStreamPlayer`.**
+
+### Additional Signals
+* `created_instance(id: int)` Emitted when a new `VoiceInstance` is created.
+* `removed_instance(id: int)` Emitted when a `VoiceInstance` is removed.
