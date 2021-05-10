@@ -10,7 +10,7 @@ export var recording: bool = false setget _set_recording
 export var listen: bool = false setget _set_listen
 export(float, 0.0, 1.0) var input_threshold: = 0.005 setget _set_input_threshold
 
-var _instances := {}
+var instances := {}
 var _id = null
 
 func _ready() -> void:
@@ -23,12 +23,12 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if get_tree().has_network_peer() && get_tree().is_network_server() && _id == null:
-		create_instance(get_tree().get_network_unique_id())
+		_create_instance(get_tree().get_network_unique_id())
 
 	if (!get_tree().has_network_peer() || !get_tree().is_network_server()) && _id == 1:
-		reset()
+		_reset()
 
-func create_instance(id: int) -> void:
+func _create_instance(id: int) -> void:
 	var instance := VoiceInstance.new()
 
 	if id == get_tree().get_network_unique_id():
@@ -44,60 +44,60 @@ func create_instance(id: int) -> void:
 
 	instance.name = str(id)
 
-	_instances[id] = instance
+	instances[id] = instance
 
 	add_child(instance)
 
 	emit_signal("created_instance", id)
 
-func remove_instance(id: int) -> void:
-	var instance: VoiceInstance = _instances[id]
+func _remove_instance(id: int) -> void:
+	var instance: VoiceInstance = instances[id]
 
 	if id == _id:
 		_id = null
 
 	instance.queue_free()
 
-	_instances.erase(id)
+	instances.erase(id)
 
 	emit_signal("removed_instance", id)
 
-func reset() -> void:
-	for id in _instances.keys():
-		remove_instance(id)
+func _reset() -> void:
+	for id in instances.keys():
+		_remove_instance(id)
 
 func _set_recording(value) -> void:
 	if _id != null:
-		_instances[_id].recording = value
+		instances[_id].recording = value
 
 	recording = value
 
 func _set_listen(value) -> void:
 	if _id != null:
-		_instances[_id].listen = value
+		instances[_id].listen = value
 
 	listen = value
 
 func _set_input_threshold(value) -> void:
 	if _id != null:
-		_instances[_id].input_threshold = value
+		instances[_id].input_threshold = value
 
 	input_threshold = value
 
 func _connected_ok() -> void:
 	if (!get_tree().has_network_peer() || !get_tree().is_network_server()) && _id == 1:
-		reset()
+		_reset()
 
-	create_instance(get_tree().get_network_unique_id())
+	_create_instance(get_tree().get_network_unique_id())
 
 func _server_disconnected() -> void:
-	reset()
+	_reset()
 
 func _player_connected(id) -> void:
-	create_instance(id)
+	_create_instance(id)
 
 func _player_disconnected(id) -> void:
-	remove_instance(id)
+	_remove_instance(id)
 
 func _received_voice_data(data: PoolRealArray, id: int) -> void:
 	emit_signal("received_voice_data", data, id)
