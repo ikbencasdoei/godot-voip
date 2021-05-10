@@ -16,7 +16,7 @@ onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContai
 onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
 onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port
 onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Listen
-onready var checkBoxToggle: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/Toggle
+onready var checkBoxToggle: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Toggle
 onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
 
 onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/Status
@@ -168,7 +168,6 @@ script = ExtResource( 1 )
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_bottom = 28.0
 custom_constants/margin_right = 50
 custom_constants/margin_top = 50
 custom_constants/margin_left = 50
@@ -181,7 +180,7 @@ __meta__ = {
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 974.0
-margin_bottom = 578.0
+margin_bottom = 550.0
 custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
@@ -189,7 +188,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_right = 250.0
-margin_bottom = 528.0
+margin_bottom = 500.0
 rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
@@ -297,28 +296,10 @@ margin_top = 176.0
 margin_right = 250.0
 margin_bottom = 180.0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 190.0
 margin_right = 250.0
 margin_bottom = 214.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
-margin_right = 250.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-disabled = true
-text = "Listen"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 224.0
-margin_right = 250.0
-margin_bottom = 248.0
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_top = 5.0
@@ -339,9 +320,9 @@ step = 0.0
 editable = false
 
 [node name="InputThreshold" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 258.0
+margin_top = 224.0
 margin_right = 250.0
-margin_bottom = 274.0
+margin_bottom = 240.0
 max_value = 0.1
 step = 0.0
 allow_greater = true
@@ -349,10 +330,29 @@ allow_lesser = true
 editable = false
 ticks_on_borders = true
 
-[node name="Toggle" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 284.0
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 250.0
 margin_right = 250.0
-margin_bottom = 308.0
+margin_bottom = 274.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+margin_right = 123.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+disabled = true
+text = "Listen"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Toggle" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+margin_left = 127.0
+margin_right = 250.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
 disabled = true
 text = "Toggle"
 __meta__ = {
@@ -360,9 +360,9 @@ __meta__ = {
 }
 
 [node name="Voice" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 318.0
+margin_top = 284.0
 margin_right = 250.0
-margin_bottom = 338.0
+margin_bottom = 304.0
 disabled = true
 text = "Speak"
 __meta__ = {
@@ -370,9 +370,9 @@ __meta__ = {
 }
 
 [node name="Disconnect" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 348.0
+margin_top = 314.0
 margin_right = 250.0
-margin_bottom = 368.0
+margin_bottom = 334.0
 disabled = true
 text = "Disconnect"
 __meta__ = {
@@ -380,9 +380,9 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 378.0
+margin_top = 344.0
 margin_right = 250.0
-margin_bottom = 528.0
+margin_bottom = 500.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -391,8 +391,9 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer"]
 margin_left = 50.0
+margin_top = 3.0
 margin_right = 200.0
-margin_bottom = 150.0
+margin_bottom = 153.0
 rect_min_size = Vector2( 150, 150 )
 texture = ExtResource( 3 )
 expand = true
@@ -401,7 +402,7 @@ stretch_mode = 5
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_left = 300.0
 margin_right = 924.0
-margin_bottom = 528.0
+margin_bottom = 500.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -428,7 +429,7 @@ __meta__ = {
 [node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
-margin_bottom = 528.0
+margin_bottom = 500.0
 focus_mode = 2
 size_flags_vertical = 3
 scroll_following = true
@@ -439,10 +440,10 @@ selection_enabled = true
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Client" to="." method="_on_Button_client_pressed"]
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip" to="." method="_on_Ip_text_changed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port" to="." method="_on_Port_value_changed"]
-[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Listen" to="." method="_on_Listen_toggled"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value" to="." method="_on_Value_value_changed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/InputThreshold" to="." method="_on_InputThreshold_value_changed"]
-[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Toggle" to="." method="_on_Toggle_toggled"]
+[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Listen" to="." method="_on_Listen_toggled"]
+[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Toggle" to="." method="_on_Toggle_toggled"]
 [connection signal="button_down" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_down"]
 [connection signal="button_up" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Button_voice_button_up"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Voice" to="." method="_on_Voice_toggled"]
