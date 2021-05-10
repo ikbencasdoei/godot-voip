@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://addons/godot-voip/scripts/voice_instance.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-voip/scripts/voice_orchestrator.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-voip/demo/Network.gd" type="Script" id=2]
 [ext_resource path="res://icon.svg" type="Texture" id=3]
 
@@ -16,7 +16,6 @@ onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContai
 onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
 onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port
 onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Listen
-onready var checkboxMultipleTransmitters: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MultipleTransmitters
 onready var checkBoxToggle: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/Toggle
 onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
 
@@ -24,7 +23,7 @@ onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/H
 onready var labelLog: RichTextLabel = $MarginContainer/HBoxContainer/VBoxContainer2/Log
 onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
-onready var voice: VoiceInstance = $VoiceInstance
+onready var voice: VoiceOrchestrator = $VoiceOrchestrator
 onready var network: Network = $Network
 
 func _ready():
@@ -87,9 +86,6 @@ func _on_Toggle_toggled(button_pressed: bool) -> void:
 func _on_Listen_toggled(button_pressed: bool) -> void:
 	voice.listen = button_pressed
 
-func _on_MultipleTransmitters_toggled(button_pressed: bool) -> void:
-	voice.multiple_transmitters_mode = button_pressed
-
 func _on_InputThreshold_value_changed(value: float) -> void:
 	voice.input_threshold = value
 	spinBoxInputThreshold.value = value
@@ -134,7 +130,6 @@ func ui_transition():
 	buttonVoice.disabled = false
 	buttonDisconnect.disabled = false
 	checkboxListen.disabled = false
-	checkboxMultipleTransmitters.disabled = false
 	checkBoxToggle.disabled = false
 	sliderInputThreshold.editable = true
 	spinBoxInputThreshold.editable = true
@@ -148,7 +143,6 @@ func ui_reset():
 	buttonVoice.disabled = true
 	buttonDisconnect.disabled = true
 	checkboxListen.disabled = true
-	checkboxMultipleTransmitters.disabled = true
 	checkBoxToggle.disabled = false
 	buttonVoice.pressed = false
 	sliderInputThreshold.editable = false
@@ -169,7 +163,7 @@ __meta__ = {
 [node name="Network" type="Node" parent="."]
 script = ExtResource( 2 )
 
-[node name="VoiceInstance" type="Node" parent="."]
+[node name="VoiceOrchestrator" type="Node" parent="."]
 script = ExtResource( 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -313,22 +307,11 @@ __meta__ = {
 }
 
 [node name="Listen" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
-margin_right = 80.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-disabled = true
-text = "Listen"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MultipleTransmitters" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
-margin_left = 84.0
 margin_right = 250.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 disabled = true
-text = "Multiple Transmitters"
+text = "Listen"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -458,7 +441,6 @@ selection_enabled = true
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip" to="." method="_on_Ip_text_changed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port" to="." method="_on_Port_value_changed"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Listen" to="." method="_on_Listen_toggled"]
-[connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MultipleTransmitters" to="." method="_on_MultipleTransmitters_toggled"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value" to="." method="_on_Value_value_changed"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/InputThreshold" to="." method="_on_InputThreshold_value_changed"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/VBoxContainer/Toggle" to="." method="_on_Toggle_toggled"]

@@ -23,11 +23,17 @@ _global_script_classes=[ {
 "class": "VoiceMic",
 "language": "GDScript",
 "path": "res://addons/godot-voip/scripts/voice_mic.gd"
+}, {
+"base": "Node",
+"class": "VoiceOrchestrator",
+"language": "GDScript",
+"path": "res://addons/godot-voip/scripts/voice_orchestrator.gd"
 } ]
 _global_script_class_icons={
 "Network": "",
 "VoiceInstance": "",
-"VoiceMic": ""
+"VoiceMic": "",
+"VoiceOrchestrator": ""
 }
 
 [application]
