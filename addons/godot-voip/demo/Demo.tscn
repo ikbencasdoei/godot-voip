@@ -50,7 +50,6 @@ func _on_Button_server_pressed() -> void:
 		if err == FAILED && OS.get_name() == \"HTML5\":
 			labelStatus.text += \", Starting a server is not supported on HTML5.\"
 
-
 		return
 
 	labelStatus.text = \"server started\"
@@ -105,6 +104,7 @@ func _connected_ok():
 
 func _connected_fail():
 	labelStatus.text = \"Failed to connect to server!\"
+	ui_reset()
 
 func _server_disconnected():
 	labelStatus.text = \"Server disconnected\"
