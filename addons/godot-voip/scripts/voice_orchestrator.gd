@@ -34,10 +34,11 @@ func create_instance(id: int) -> void:
 		instance.listen = listen
 		instance.input_threshold = input_threshold
 
-		instance.connect("received_voice_data", self, "_received_voice_data")
 		instance.connect("send_voice_data", self, "_send_voice_data")
 
 		_id = id
+
+	instance.connect("received_voice_data", self, "_received_voice_data")
 
 	instance.name = str(id)
 
