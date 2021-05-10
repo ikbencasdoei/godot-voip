@@ -46,7 +46,7 @@ func create_instance(id: int) -> void:
 
 	add_child(instance)
 
-func remove_instance(id: int):
+func remove_instance(id: int) -> void:
 	var instance: VoiceInstance = _instances[id]
 
 	if id == _id:
@@ -56,7 +56,7 @@ func remove_instance(id: int):
 
 	_instances.erase(id)
 
-func reset():
+func reset() -> void:
 	for id in _instances.keys():
 		remove_instance(id)
 
@@ -93,8 +93,8 @@ func _player_connected(id) -> void:
 func _player_disconnected(id) -> void:
 	remove_instance(id)
 
-func _received_voice_data(data: PoolRealArray, id: int):
+func _received_voice_data(data: PoolRealArray, id: int) -> void:
 	emit_signal("received_voice_data", data, id)
 
-func _send_voice_data(data: PoolRealArray):
+func _send_voice_data(data: PoolRealArray) -> void:
 	emit_signal("send_voice_data", data)
