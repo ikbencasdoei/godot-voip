@@ -9,14 +9,12 @@ export var custom_voice_audio_stream_player: NodePath
 export var recording: bool = false
 export var listen: bool = false
 export(float, 0.0, 1.0) var input_threshold: = 0.005
-export var multiple_transmitters_mode: bool = false
 
 var _mic: VoiceMic
 var _voice
 var _effect_capture: AudioEffectCapture
 var _playback: AudioStreamGeneratorPlayback
-var _receive_buffer := PoolRealArray()	#used in single transmitter mode
-var _receive_buffers := {}	#used in multiple transmitters mode
+var _receive_buffer := PoolRealArray()
 var _prev_frame_recording = false
 
 func _process(delta: float) -> void:
@@ -58,50 +56,20 @@ remote func _speak(sample_data: PoolRealArray, id: int):
 
 	emit_signal("received_voice_data", sample_data, id)
 
-	if !multiple_transmitters_mode:
-		_receive_buffer.append_array(sample_data)
-	else:
-		if !_receive_buffers.has(id):
-			_receive_buffers[id] = PoolRealArray()
-
-		var buffer: PoolRealArray = _receive_buffers[id]
-		buffer.append_array(sample_data)
-		_receive_buffers[id] = buffer
+	_receive_buffer.append_array(sample_data)
 
 func _process_voice():
 	if _playback.get_frames_available() < 1:
 		return
 
-	if !multiple_transmitters_mode:
-		for i in range(min(_playback.get_frames_available(), _receive_buffer.size())):
-			_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
-			_receive_buffer.remove(0)
+	for i in range(min(_playback.get_frames_available(), _receive_buffer.size())):
+		_playback.push_frame(Vector2(_receive_buffer[0], _receive_buffer[0]))
+		_receive_buffer.remove(0)
 
-		if _playback.get_frames_available() > 0:
-			var buffer = PoolVector2Array()
-			buffer.resize(_playback.get_frames_available())
-			_playback.push_buffer(buffer)
-
-	else:
-		for a in range(_playback.get_frames_available()):
-			var values = []
-			for i in _receive_buffers:
-				if _receive_buffers[i].size() > 0:
-					var buffer: PoolRealArray = _receive_buffers[i]
-					values.append(_receive_buffers[i][0])
-					buffer.remove(0)
-					_receive_buffers[i] = buffer
-
-			if values.size() > 0:
-				var average: float
-				for value in values:
-					average += value
-
-				average /= float(values.size())
-
-				_playback.push_frame(Vector2(average, average))
-			else:
-				_playback.push_frame(Vector2.ZERO)
+	if _playback.get_frames_available() > 0:
+		var buffer = PoolVector2Array()
+		buffer.resize(_playback.get_frames_available())
+		_playback.push_buffer(buffer)
 
 func _process_mic():
 	if recording:
