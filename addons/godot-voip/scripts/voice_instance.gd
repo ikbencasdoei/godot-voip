@@ -25,13 +25,13 @@ func _process(delta: float) -> void:
 
 	_process_mic()
 
-func create_mic():
+func _create_mic():
 	_mic = VoiceMic.new()
 	add_child(_mic)
 	var record_bus_idx := AudioServer.get_bus_index(_mic.bus)
 	_effect_capture = AudioServer.get_bus_effect(record_bus_idx, 0)
 
-func create_voice():
+func _create_voice():
 	if !custom_voice_audio_stream_player.is_empty():
 		var player = get_node(custom_voice_audio_stream_player)
 		if player != null:
@@ -54,7 +54,7 @@ func create_voice():
 
 remote func _speak(sample_data: PoolRealArray, id: int):
 	if _playback == null:
-		create_voice()
+		_create_voice()
 
 	emit_signal("received_voice_data", sample_data, id)
 
@@ -106,7 +106,7 @@ func _process_voice():
 func _process_mic():
 	if recording:
 		if _effect_capture == null:
-			create_mic()
+			_create_mic()
 
 		if _prev_frame_recording == false:
 			_effect_capture.clear_buffer()
