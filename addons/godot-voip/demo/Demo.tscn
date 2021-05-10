@@ -28,7 +28,7 @@ onready var network: Network = $Network
 
 func _ready() -> void:
 	voice.connect(\"received_voice_data\", self, \"_received_voice_data\")
-	voice.connect(\"send_voice_data\", self, \"_send_voice_data\")
+	voice.connect(\"sent_voice_data\", self, \"_sent_voice_data\")
 
 	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
@@ -119,8 +119,8 @@ func _player_disconnected(_id) -> void:
 func _received_voice_data(data: PoolRealArray, id: int) -> void:
 	labelLog.add_text(\"received voice data of size:%s from id:%s\\n\" % [data.size(), id])
 
-func _send_voice_data(data: PoolRealArray) -> void:
-	labelLog.add_text(\"send voice data of size:%s\\n\" % data.size())
+func _sent_voice_data(data: PoolRealArray) -> void:
+	labelLog.add_text(\"sent voice data of size:%s\\n\" % data.size())
 
 
 func ui_transition() -> void:

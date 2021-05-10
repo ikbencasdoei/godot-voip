@@ -2,7 +2,7 @@ extends Node
 class_name VoiceInstance
 
 signal received_voice_data
-signal send_voice_data
+signal sent_voice_data
 
 export var custom_voice_audio_stream_player: NodePath
 
@@ -97,7 +97,7 @@ func _process_mic():
 				_speak(data, get_tree().get_network_unique_id())
 
 			rpc_unreliable("_speak", data,  get_tree().get_network_unique_id())
-			emit_signal("send_voice_data", data)
+			emit_signal("sent_voice_data", data)
 
 	_prev_frame_recording = recording
 

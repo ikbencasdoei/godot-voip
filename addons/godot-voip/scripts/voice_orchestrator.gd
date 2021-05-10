@@ -2,7 +2,7 @@ extends Node
 class_name VoiceOrchestrator
 
 signal received_voice_data
-signal send_voice_data
+signal sent_voice_data
 signal created_instance
 signal removed_instance
 
@@ -36,7 +36,7 @@ func _create_instance(id: int) -> void:
 		instance.listen = listen
 		instance.input_threshold = input_threshold
 
-		instance.connect("send_voice_data", self, "_send_voice_data")
+		instance.connect("sent_voice_data", self, "_sent_voice_data")
 
 		_id = id
 
@@ -102,5 +102,5 @@ func _player_disconnected(id) -> void:
 func _received_voice_data(data: PoolRealArray, id: int) -> void:
 	emit_signal("received_voice_data", data, id)
 
-func _send_voice_data(data: PoolRealArray) -> void:
-	emit_signal("send_voice_data", data)
+func _sent_voice_data(data: PoolRealArray) -> void:
+	emit_signal("sent_voice_data", data)
