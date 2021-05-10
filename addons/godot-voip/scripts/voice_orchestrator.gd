@@ -14,6 +14,7 @@ var _id = null
 func _ready() -> void:
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	get_tree().connect("connection_failed", self, "_server_disconnected")
 
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
@@ -21,6 +22,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if get_tree().has_network_peer() && get_tree().is_network_server() && _id == null:
 		create_instance(get_tree().get_network_unique_id())
+
+	if (!get_tree().has_network_peer() || !get_tree().is_network_server()) && _id == 1:
+		reset()
 
 func create_instance(id: int) -> void:
 	var instance := VoiceInstance.new()
@@ -74,6 +78,9 @@ func _set_input_threshold(value) -> void:
 	input_threshold = value
 
 func _connected_ok() -> void:
+	if (!get_tree().has_network_peer() || !get_tree().is_network_server()) && _id == 1:
+		reset()
+
 	create_instance(get_tree().get_network_unique_id())
 
 func _server_disconnected() -> void:
