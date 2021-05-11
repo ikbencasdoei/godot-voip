@@ -21,7 +21,7 @@ Godot-voip is a Godot addon which makes it very easy to setup a real time voice 
 6. Set `$VoiceInstance.recording` or `$VoiceOrchestrator.recording` to `true` and it will send your microphone input to connected participants.
 
 ### Running demo
-1. Go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to download the latest release, or you can clone/download this repository to get the latest commit.
+1. Go to the templates tab in the Godot Engine project manager and look for godot-voip, or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to manually download the latest release, or you can clone/download this repository to get the latest commit.
 2. Open downloaded project.
 
 # Documentation
