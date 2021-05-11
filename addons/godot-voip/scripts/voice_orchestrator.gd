@@ -66,19 +66,19 @@ func _reset() -> void:
 	for id in instances.keys():
 		_remove_instance(id)
 
-func _set_recording(value) -> void:
+func _set_recording(value: bool) -> void:
 	if _id != null:
 		instances[_id].recording = value
 
 	recording = value
 
-func _set_listen(value) -> void:
+func _set_listen(value: bool) -> void:
 	if _id != null:
 		instances[_id].listen = value
 
 	listen = value
 
-func _set_input_threshold(value) -> void:
+func _set_input_threshold(value: float) -> void:
 	if _id != null:
 		instances[_id].input_threshold = value
 

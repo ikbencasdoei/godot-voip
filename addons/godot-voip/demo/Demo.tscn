@@ -116,10 +116,10 @@ func _server_disconnected() -> void:
 	labelStatus.text = \"Server disconnected\"
 	ui_reset()
 
-func _player_connected(_id) -> void:
+func _player_connected(_id: int) -> void:
 	labelLog.text += \"Player with id: %s connected\\n\" % _id
 
-func _player_disconnected(_id) -> void:
+func _player_disconnected(_id: int) -> void:
 	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
 func _received_voice_data(data: PoolRealArray, id: int) -> void:
