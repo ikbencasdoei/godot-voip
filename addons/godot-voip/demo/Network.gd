@@ -4,8 +4,6 @@ class_name Network
 var server_port := 3000
 var server_ip := "127.0.0.1"
 
-const MAX_PLAYERS := 20
-
 func start_client() -> int:
 	var peer := WebSocketClient.new()
 
