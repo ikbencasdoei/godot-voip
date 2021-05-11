@@ -37,9 +37,15 @@ func _ready() -> void:
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
 	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
 
+	if voice.recording:
+		checkBoxToggle.pressed = true
+		buttonVoice.pressed = true
+
 	spinBoxHostPort.value = network.server_port
 	lineEditClientIp.text = network.server_ip
 	spinBoxClientPort.value = network.server_port
+	checkboxListen.pressed = voice.listen
+	checkBoxToggle.pressed = buttonVoice.toggle_mode
 	sliderInputThreshold.value = voice.input_threshold
 
 func _on_Button_server_pressed() -> void:
