@@ -26,7 +26,7 @@ Godot-voip is a Godot addon which makes it very easy to setup a real time voice 
 
 # Documentation
 
-## VoiceInstance
+## VoiceInstance <img src="https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icons/VoiceInstance.svg" alt="icon" width="32"/>
 This node implements a single voice connection.
 
 ### Signals
@@ -41,7 +41,7 @@ This node implements a single voice connection.
 |`bool`|listen|If true, the VoiceInstance will also play any microhphone data it records.|
 |`float`|input_threshold|Value above which microhphone data will be sent. Set to `0` to disable.|
 
-## VoiceOrchestrator
+## VoiceOrchestrator <img src="https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icons/VoiceOrchestrator.svg" alt="icon" width="32"/>
 This node implements multiple voice connections. It will automatically spawn new VoiceInstances when a player connects to the server and will remove them again after they disconnect.
 Interfacing with a `VoiceOrchestrator` is the same as with a `VoiceInstance`. **Does not support a custom `AudioStreamPlayer`.**
 
