@@ -24,6 +24,9 @@ Godot-voip is a Godot addon which makes it very easy to setup a real time voice 
 1. Go to the templates tab in the Godot Engine project manager and look for godot-voip, or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to manually download the latest release, or you can clone/download this repository to get the latest commit.
 2. Open downloaded project.
 
+### For macOS users
+Users running godot-voip on macOS need to make sure the microphone format in macOS audio settings is equal to the mix-rate in Godot project-settings. 
+
 # Documentation
 
 ## VoiceInstance <img src="https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icons/VoiceInstance.svg" alt="icon" width="32"/>
