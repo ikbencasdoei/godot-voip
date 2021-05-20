@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
-* text=false
+* text=false eol=lf
+
+# Ignore some files when exporting.
+/.github            export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
