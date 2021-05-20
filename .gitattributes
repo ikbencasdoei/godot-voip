@@ -2,6 +2,14 @@
 * text=false eol=lf
 
 # Ignore some files when exporting.
-/.github            export-ignore
-/.gitattributes     export-ignore
-/.gitignore         export-ignore
+/.github                            export-ignore
+/.gitattributes                     export-ignore
+/.gitignore                         export-ignore
+/addons/godot-voip/demo/Demo.tscn   export-ignore
+/default_env.tres                   export-ignore
+/icon.png                           export-ignore
+/icon.png.import                    export-ignore
+/icon.svg                           export-ignore
+/icon.svg.import                    export-ignore
+/project.godot                      export-ignore
+/README.md                          export-ignore
