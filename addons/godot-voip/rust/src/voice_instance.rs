@@ -72,39 +72,33 @@ impl NativeVoiceInstance {
             .done();
     }
 
-    fn get_custom_voice_audio_stream_player(&self, _owner: TRef<Node>) -> &NodePath {
+    fn get_custom_voice_audio_stream_player(&self, _: TRef<Node>) -> &NodePath {
         &self.custom_voice_audio_stream_player
     }
-
-    fn set_custom_voice_audio_stream_player(&mut self, _owner: TRef<Node>, value: NodePath) {
+    fn set_custom_voice_audio_stream_player(&mut self, _: TRef<Node>, value: NodePath) {
         self.custom_voice_audio_stream_player = value;
     }
 
-    fn get_recording(&self, _owner: TRef<Node>) -> &bool {
+    fn get_recording(&self, _: TRef<Node>) -> &bool {
         &self.recording
     }
-
-    fn set_recording(&mut self, _owner: TRef<Node>, value: bool) {
+    fn set_recording(&mut self, _: TRef<Node>, value: bool) {
         self.recording = value;
     }
 
-    fn get_listen(&self, _owner: TRef<Node>) -> &bool {
+    fn get_listen(&self, _: TRef<Node>) -> &bool {
         &self.listen
     }
-
-    fn set_listen(&mut self, _owner: TRef<Node>, value: bool) {
+    fn set_listen(&mut self, _: TRef<Node>, value: bool) {
         self.listen = value;
     }
 
-    fn get_input_threshold(&self, _owner: TRef<Node>) -> &f32 {
+    fn get_input_threshold(&self, _: TRef<Node>) -> &f32 {
         &self.input_threshold
     }
-
-    fn set_input_threshold(&mut self, _owner: TRef<Node>, value: f32) {
+    fn set_input_threshold(&mut self, _: TRef<Node>, value: f32) {
         self.input_threshold = value;
     }
 
     #[export]
-    fn _ready(&self, _owner: &Node) {
-    }
 }
