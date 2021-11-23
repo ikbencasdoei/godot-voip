@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "NativeVoiceInstance",
+"language": "NativeScript",
+"path": "res://addons/godot-voip/scripts/voice_instance.gdns"
+}, {
+"base": "Node",
 "class": "Network",
 "language": "GDScript",
 "path": "res://addons/godot-voip/demo/Network.gd"
@@ -30,6 +35,7 @@ _global_script_classes=[ {
 "path": "res://addons/godot-voip/scripts/voice_orchestrator.gd"
 } ]
 _global_script_class_icons={
+"NativeVoiceInstance": "",
 "Network": "",
 "VoiceInstance": "",
 "VoiceMic": "",

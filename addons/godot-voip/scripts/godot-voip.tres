@@ -1,0 +1,5 @@
+[gd_resource type="GDNativeLibrary" format=2]
+
+[resource]
+entry/Windows.64 = "res://addons/godot-voip/rust/target/debug/godot_voip.dll"
+dependency/Windows.64 = [  ]
