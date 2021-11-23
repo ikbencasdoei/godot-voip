@@ -12,7 +12,7 @@ pub struct NativeVoiceInstance {
 
 #[methods]
 impl NativeVoiceInstance {
-    fn new(_owner: &Node) -> Self {
+    fn new(_: &Node) -> Self {
         NativeVoiceInstance {
             custom_voice_audio_stream_player: NodePath::from_str(""),
             recording: false,
