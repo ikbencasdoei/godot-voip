@@ -9,4 +9,4 @@ edition = "2018"
 crate-type= ["cdylib"]
 
 [dependencies]
-gdnative = "0.9"
+gdnative = {git = "https://github.com/godot-rust/godot-rust", commit = "deb9dbfd413f8ac751a2267be010b2089ff26d50"}
