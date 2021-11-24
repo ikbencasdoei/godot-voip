@@ -16,3 +16,4 @@ mono_crash.*.json
 *~
 
 addons/godot-voip/rust/target/
+addons/godot-voip/rust/Cargo.lock
