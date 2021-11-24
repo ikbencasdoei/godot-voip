@@ -1,4 +1,6 @@
-use gdnative::{nativescript::property::*, prelude::*};
+use std::cmp::min;
+
+use gdnative::{api::AudioStreamGeneratorPlayback, nativescript::property::*, prelude::*};
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -8,6 +10,8 @@ pub struct NativeVoiceInstance {
     recording: bool,
     listen: bool,
     input_threshold: f32,
+    playback: Option<AudioStreamGeneratorPlayback>,
+    receive_buffer: Float32Array,
 }
 
 #[methods]
@@ -18,6 +22,8 @@ impl NativeVoiceInstance {
             recording: false,
             listen: false,
             input_threshold: 0.005,
+            playback: None,
+            receive_buffer: Float32Array::new(),
         }
     }
 
@@ -101,4 +107,36 @@ impl NativeVoiceInstance {
     }
 
     #[export]
+    fn _process(&mut self, _: &Node, _: f32) {
+        self.process_voice();
+    }
+
+    fn process_voice(&mut self) {
+        match &self.playback {
+            Some(playback) => {
+                if playback.get_frames_available() < 1 {
+                    return;
+                }
+
+                for _ in 0..min(
+                    playback.get_frames_available(),
+                    self.receive_buffer.len() as i64,
+                ) {
+                    playback.push_frame(Vector2::new(
+                        self.receive_buffer.get(0),
+                        self.receive_buffer.get(0),
+                    ));
+
+                    self.receive_buffer.remove(0);
+                }
+
+                if playback.get_frames_available() > 0 {
+                    let mut buffer = Vector2Array::new();
+                    buffer.resize(playback.get_frames_available() as i32);
+                    playback.push_buffer(buffer);
+                }
+            }
+            None => (),
+        }
+    }
 }
