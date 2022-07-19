@@ -6,4 +6,4 @@
 class_name = "NativeVoiceInstance"
 library = ExtResource( 1 )
 script_class_name = "NativeVoiceInstance"
-script_class_icon_path = "res://addons/godot-voip/icons/VoiceInstance.svg"
+script_class_icon_path = "res://addons/godot-voip/icons/NativeVoiceInstance.svg"

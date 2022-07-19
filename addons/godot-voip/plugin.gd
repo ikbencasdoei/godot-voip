@@ -20,7 +20,7 @@ func _enter_tree() -> void:
 		"NativeVoiceInstance",
 		"Node",
 		preload("res://addons/godot-voip/scripts/native_voice_instance.gdns"),
-		preload("res://addons/godot-voip/icons/VoiceInstance.svg")
+		preload("res://addons/godot-voip/icons/NativeVoiceInstance.svg")
 	)
 
 func _exit_tree() -> void:
