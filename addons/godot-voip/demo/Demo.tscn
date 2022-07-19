@@ -47,6 +47,7 @@ func _ready() -> void:
 		type_name = type_name.substr(0, 1) + type_name.substr(1).to_lower()
 		optionButtonServerType.add_item(type_name, i)
 
+	optionButtonServerType.selected = network.client_type
 	spinBoxHostPort.value = network.server_port
 	lineEditClientIp.text = network.server_ip
 	spinBoxClientPort.value = network.server_port
