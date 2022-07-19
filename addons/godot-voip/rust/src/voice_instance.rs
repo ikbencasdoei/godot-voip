@@ -1,6 +1,13 @@
 use std::cmp::min;
 
-use gdnative::{api::AudioStreamGeneratorPlayback, nativescript::property::*, prelude::*};
+use gdnative::{
+    api::{
+        AudioEffectCapture, AudioServer, AudioStreamGenerator, AudioStreamGeneratorPlayback,
+        AudioStreamPlayer, AudioStreamPlayer2D, AudioStreamPlayer3D,
+    },
+    export::hint::{FloatHint, RangeHint},
+    prelude::*,
+};
 
 #[derive(NativeClass)]
 #[inherit(Node)]
@@ -10,63 +17,101 @@ pub struct NativeVoiceInstance {
     recording: bool,
     listen: bool,
     input_threshold: f32,
-    playback: Option<AudioStreamGeneratorPlayback>,
+    playback: Option<Ref<AudioStreamGeneratorPlayback>>,
     receive_buffer: Float32Array,
+    effect_capture: Option<Ref<AudioEffectCapture>>,
+    prev_frame_recording: bool,
 }
 
 #[methods]
 impl NativeVoiceInstance {
     fn new(_: &Node) -> Self {
-        NativeVoiceInstance {
+        Self {
             custom_voice_audio_stream_player: NodePath::from_str(""),
             recording: false,
             listen: false,
             input_threshold: 0.005,
             playback: None,
             receive_buffer: Float32Array::new(),
+            effect_capture: None,
+            prev_frame_recording: false,
         }
     }
 
+    fn do_playback(&mut self, voice: &TRef<Node, Shared>) {
+        let generator = AudioStreamGenerator::new();
+        generator.set_buffer_length(0.1f64);
+
+        if let Some(voice) = voice.cast::<AudioStreamPlayer>() {
+            voice.set_stream(generator);
+            self.playback = Some(
+                voice
+                    .get_stream_playback()
+                    .unwrap()
+                    .try_cast::<AudioStreamGeneratorPlayback>()
+                    .unwrap(),
+            );
+            voice.play(0.0);
+            return;
+        }
+
+        if let Some(voice) = voice.cast::<AudioStreamPlayer2D>() {
+            voice.set_stream(generator);
+            self.playback = Some(
+                voice
+                    .get_stream_playback()
+                    .unwrap()
+                    .try_cast::<AudioStreamGeneratorPlayback>()
+                    .unwrap(),
+            );
+            voice.play(0.0);
+            return;
+        }
+
+        if let Some(voice) = voice.cast::<AudioStreamPlayer3D>() {
+            voice.set_stream(generator);
+            self.playback = Some(
+                voice
+                    .get_stream_playback()
+                    .unwrap()
+                    .try_cast::<AudioStreamGeneratorPlayback>()
+                    .unwrap(),
+            );
+            voice.play(0.0);
+            return;
+        }
+
+        godot_error!("VoiceInstance: Node is not any kind of AudioStreamPlayer.")
+    }
+
     fn register_class(builder: &ClassBuilder<Self>) {
-        builder.add_signal(Signal {
-            name: "received_voice_data",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "sent_voice_data",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "created_instance",
-            args: &[],
-        });
-        builder.add_signal(Signal {
-            name: "removed_instance",
-            args: &[],
-        });
+        builder.signal("received_voice_data").done();
+        builder.signal("sent_voice_data").done();
+        builder.signal("created_instance").done();
+        builder.signal("removed_instance").done();
 
         builder
-            .add_property::<NodePath>("custom_voice_audio_stream_player")
-            .with_ref_getter(NativeVoiceInstance::get_custom_voice_audio_stream_player)
-            .with_setter(NativeVoiceInstance::set_custom_voice_audio_stream_player)
+            .property::<NodePath>("custom_voice_audio_stream_player")
+            .with_ref_getter(Self::get_custom_voice_audio_stream_player)
+            .with_setter(Self::set_custom_voice_audio_stream_player)
             .with_default(NodePath::from_str(""))
             .done();
         builder
-            .add_property::<bool>("recording")
-            .with_ref_getter(NativeVoiceInstance::get_recording)
-            .with_setter(NativeVoiceInstance::set_recording)
+            .property::<bool>("recording")
+            .with_ref_getter(Self::get_recording)
+            .with_setter(Self::set_recording)
             .with_default(false)
             .done();
         builder
-            .add_property::<bool>("listen")
-            .with_ref_getter(NativeVoiceInstance::get_listen)
-            .with_setter(NativeVoiceInstance::set_listen)
+            .property::<bool>("listen")
+            .with_ref_getter(Self::get_listen)
+            .with_setter(Self::set_listen)
             .with_default(false)
             .done();
         builder
-            .add_property::<f32>("input_threshold")
-            .with_ref_getter(NativeVoiceInstance::get_input_threshold)
-            .with_setter(NativeVoiceInstance::set_input_threshold)
+            .property::<f32>("input_threshold")
+            .with_ref_getter(Self::get_input_threshold)
+            .with_setter(Self::set_input_threshold)
             .with_default(0.005)
             .with_hint(FloatHint::Range(RangeHint {
                 min: 0.0,
@@ -81,7 +126,19 @@ impl NativeVoiceInstance {
     fn get_custom_voice_audio_stream_player(&self, _: TRef<Node>) -> &NodePath {
         &self.custom_voice_audio_stream_player
     }
-    fn set_custom_voice_audio_stream_player(&mut self, _: TRef<Node>, value: NodePath) {
+
+    fn set_custom_voice_audio_stream_player(&mut self, owner: TRef<Node>, value: NodePath) {
+        if !value.is_empty() {
+            match owner.get_node(value.to_string()) {
+                Some(player) => {
+                    self.do_playback(unsafe { &player.assume_safe() });
+                }
+                None => godot_error!(
+                    "VoiceInstance: Referenced custom AudioStreamPlayer does not exist."
+                ),
+            }
+        }
+
         self.custom_voice_audio_stream_player = value;
     }
 
@@ -107,36 +164,121 @@ impl NativeVoiceInstance {
     }
 
     #[export]
-    fn _process(&mut self, _: &Node, _: f32) {
+    fn _process(&mut self, owner: &Node, _: f32) {
         self.process_voice();
+        self.process_mic(owner);
+    }
+
+    #[export(rpc = "remote")]
+    fn speak(&mut self, owner: &Node, data: PoolArray<f32>) {
+        if self.playback.is_none() {
+            let voice = AudioStreamPlayer::new().into_shared();
+            self.do_playback(unsafe { &voice.assume_safe().upcast::<Node>() });
+            owner.add_child(voice, false);
+        }
+
+        let id = unsafe { owner.get_tree().unwrap().assume_safe() }.get_rpc_sender_id();
+
+        owner.emit_signal("received_voice_data", &[data.to_variant(), id.to_variant()]);
+
+        self.receive_buffer.append(&data);
     }
 
     fn process_voice(&mut self) {
-        match &self.playback {
-            Some(playback) => {
-                if playback.get_frames_available() < 1 {
+        if let Some(playback) = &self.playback {
+            let playback = unsafe { playback.assume_safe() };
+
+            if playback.get_frames_available() < 1 {
+                return;
+            }
+
+            for _ in 0..min(
+                playback.get_frames_available(),
+                self.receive_buffer.len() as i64,
+            ) {
+                playback.push_frame(Vector2::new(
+                    self.receive_buffer.get(0),
+                    self.receive_buffer.get(0),
+                ));
+
+                self.receive_buffer.remove(0);
+            }
+
+            // if playback.get_frames_available() > 0 {
+            //     let mut buffer = Vector2Array::new();
+            //     buffer.resize(playback.get_frames_available() as i32);
+            //     playback.push_buffer(buffer);
+            // }
+        }
+    }
+
+    fn create_mic(&mut self) {
+        let audio_server = AudioServer::godot_singleton();
+        let string = "VoiceMicRecorder";
+        let mut count = 0;
+        while audio_server.get_bus_index(format!("{}{}", string, count)) > -1 {
+            count += 1;
+        }
+
+        let i = audio_server.bus_count();
+        audio_server.add_bus(i);
+        audio_server.set_bus_name(i, format!("{}{}", string, count));
+        audio_server.add_bus_effect(i, AudioEffectCapture::new(), 0);
+        self.effect_capture = Some(
+            audio_server
+                .get_bus_effect(i, 0)
+                .unwrap()
+                .cast::<AudioEffectCapture>()
+                .unwrap(),
+        );
+    }
+
+    fn process_mic(&mut self, owner: &Node) {
+        if self.recording {
+            if self.effect_capture.is_none() {
+                self.create_mic()
+            }
+
+            let effect_capture = unsafe { self.effect_capture.as_ref().unwrap().assume_safe() };
+
+            if effect_capture.get_frames_available() > 0 {
+                if !self.prev_frame_recording {
+                    effect_capture.clear_buffer();
+                }
+
+                let stereo_data = effect_capture.get_buffer(effect_capture.get_frames_available());
+                let vec_stereo_data = stereo_data.read().to_vec();
+
+                let mut mono_data: PoolArray<f32> = PoolArray::new();
+                mono_data.resize(vec_stereo_data.len() as i32);
+
+                let mut vec_mono_data: Vec<f32> = Vec::with_capacity(vec_stereo_data.len());
+
+                let mut max_value = 0f32;
+
+                for vector in vec_stereo_data.iter() {
+                    let value = (vector.x + vector.y) / 2.0;
+
+                    max_value = max_value.max(value);
+                    vec_mono_data.push(value);
+                }
+
+                if max_value < self.input_threshold {
                     return;
                 }
 
-                for _ in 0..min(
-                    playback.get_frames_available(),
-                    self.receive_buffer.len() as i64,
-                ) {
-                    playback.push_frame(Vector2::new(
-                        self.receive_buffer.get(0),
-                        self.receive_buffer.get(0),
-                    ));
+                mono_data.append_vec(&mut vec_mono_data);
 
-                    self.receive_buffer.remove(0);
+                if self.listen {
+                    self.speak(owner, mono_data.clone());
                 }
 
-                if playback.get_frames_available() > 0 {
-                    let mut buffer = Vector2Array::new();
-                    buffer.resize(playback.get_frames_available() as i32);
-                    playback.push_buffer(buffer);
-                }
+                owner.rpc_unreliable("speak", &[mono_data.to_variant()]);
+
+                owner.emit_signal("sent_voice_data", &[mono_data.to_variant()]);
             }
-            None => (),
         }
+
+        self.prev_frame_recording = self.recording;
     }
 }
