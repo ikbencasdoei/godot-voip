@@ -10,4 +10,4 @@ authors = ["Cas Brugman <brug.dev>"]
 crate-type= ["cdylib"]
 
 [dependencies]
-gdnative = {git = "https://github.com/godot-rust/godot-rust", commit = "deb9dbfd413f8ac751a2267be010b2089ff26d50"}
+gdnative = "0.10.0"
