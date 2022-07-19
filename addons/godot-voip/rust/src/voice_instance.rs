@@ -38,7 +38,10 @@ impl NativeVoiceInstance {
         }
     }
 
-    fn audiostream_set_playback_generator(&mut self, voice: &TRef<Node, Shared>) {
+    fn audiostream_set_playback_generator(
+        &mut self,
+        voice: &TRef<Node, Shared>,
+    ) -> Result<(), &str> {
         let generator = AudioStreamGenerator::new();
         generator.set_buffer_length(0.1f64);
 
@@ -53,7 +56,7 @@ impl NativeVoiceInstance {
                     .unwrap(),
             );
             voice.play(0.0);
-            return;
+            return Ok(());
         }
 
         if let Some(voice) = voice.cast::<AudioStreamPlayer2D>() {
@@ -66,7 +69,7 @@ impl NativeVoiceInstance {
                     .unwrap(),
             );
             voice.play(0.0);
-            return;
+            return Ok(());
         }
 
         if let Some(voice) = voice.cast::<AudioStreamPlayer3D>() {
@@ -79,10 +82,10 @@ impl NativeVoiceInstance {
                     .unwrap(),
             );
             voice.play(0.0);
-            return;
+            return Ok(());
         }
 
-        godot_error!("VoiceInstance: Node is not any kind of AudioStreamPlayer.")
+        Err("VoiceInstance: Node is not any kind of AudioStreamPlayer.")
     }
 
     fn register_class(builder: &ClassBuilder<Self>) {
@@ -137,11 +140,21 @@ impl NativeVoiceInstance {
         if !value.is_empty() {
             match owner.get_node(value.to_string()) {
                 Some(player) => {
-                    self.audiostream_set_playback_generator(unsafe { &player.assume_safe() });
+                    match self.audiostream_set_playback_generator(unsafe { &player.assume_safe() })
+                    {
+                        Err(err) => {
+                            godot_error!("{}", err);
+                            return;
+                        }
+                        _ => (),
+                    }
                 }
-                None => godot_error!(
-                    "VoiceInstance: Referenced custom AudioStreamPlayer does not exist."
-                ),
+                None => {
+                    godot_error!(
+                        "VoiceInstance: Referenced custom AudioStreamPlayer does not exist."
+                    );
+                    return;
+                }
             }
         }
 
@@ -181,14 +194,14 @@ impl NativeVoiceInstance {
             let voice = AudioStreamPlayer::new().into_shared();
             self.audiostream_set_playback_generator(unsafe {
                 &voice.assume_safe().upcast::<Node>()
-            });
+            })
+            .unwrap();
             owner.add_child(voice, false);
         }
 
         let id = unsafe { owner.get_tree().unwrap().assume_safe() }.get_rpc_sender_id();
 
         owner.emit_signal("received_voice_data", &[data.to_variant(), id.to_variant()]);
-
         self.receive_buffer.append(&data);
     }
 
