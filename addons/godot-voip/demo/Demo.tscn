@@ -173,9 +173,6 @@ func _on_ServerType_item_selected(index: int) -> void:
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = SubResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Network" type="Node" parent="."]
 script = ExtResource( 2 )
@@ -232,30 +229,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 250.0
-margin_bottom = 50.0
-
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
-margin_top = 3.0
-margin_right = 126.0
-margin_bottom = 17.0
-text = "VoiceInstance type:"
-
-[node name="VoiceType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
-margin_left = 130.0
-margin_right = 250.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 60.0
-margin_right = 250.0
-margin_bottom = 64.0
+margin_bottom = 34.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 44.0
