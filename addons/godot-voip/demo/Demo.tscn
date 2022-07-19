@@ -12,8 +12,8 @@ onready var buttonClient: Button = $MarginContainer/HBoxContainer/VBoxContainer/
 onready var buttonVoice : Button = $MarginContainer/HBoxContainer/VBoxContainer/Voice
 onready var buttonDisconnect : Button = $MarginContainer/HBoxContainer/VBoxContainer/Disconnect
 
-onready var optionButtonServerType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/ServerType
-onready var optionButtonVoiceType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/VoiceType
+onready var optionButtonServerType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5/ServerType
+onready var optionButtonVoiceType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6/VoiceType
 onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port
 onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
 onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port
@@ -219,19 +219,41 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ServerType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer5" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_right = 250.0
 margin_bottom = 20.0
-text = "Server/Client type"
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5"]
+margin_top = 3.0
+margin_right = 118.0
+margin_bottom = 17.0
+text = "Server/Client type:"
+
+[node name="ServerType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5"]
+margin_left = 122.0
+margin_right = 250.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VoiceType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 250.0
 margin_bottom = 50.0
-text = "VoiceInstance type"
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 126.0
+margin_bottom = 17.0
+text = "VoiceInstance type:"
+
+[node name="VoiceType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
+margin_left = 130.0
+margin_right = 250.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -480,8 +502,8 @@ size_flags_vertical = 3
 scroll_following = true
 selection_enabled = true
 
-[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/ServerType" to="." method="_on_ServerType_item_selected"]
-[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/VoiceType" to="." method="_on_VoiceType_item_selected"]
+[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5/ServerType" to="." method="_on_ServerType_item_selected"]
+[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6/VoiceType" to="." method="_on_VoiceType_item_selected"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port" to="." method="_on_Port_value_changed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip" to="." method="_on_Ip_text_changed"]
