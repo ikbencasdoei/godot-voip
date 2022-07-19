@@ -64,7 +64,7 @@ func _on_Button_server_pressed() -> void:
 
 		return
 
-	labelStatus.text = \"server started\"
+	labelStatus.text = \"Server started\"
 
 	ui_transition()
 
@@ -78,6 +78,7 @@ func _on_Button_client_pressed() -> void:
 
 func _on_Disconnect_pressed() -> void:
 	network.stop()
+	labelStatus.text = \"Connection stopped\"
 	ui_reset()
 
 func _on_Button_voice_button_down() -> void:
@@ -129,10 +130,10 @@ func _player_disconnected(_id: int) -> void:
 	labelLog.text += \"Player with id: %s disconnected\\n\" % _id
 
 func _received_voice_data(data: PoolRealArray, id: int) -> void:
-	labelLog.add_text(\"received voice data of size:%s from id:%s\\n\" % [data.size(), id])
+	labelLog.add_text(\"Received voice data of size:%s from id:%s\\n\" % [data.size(), id])
 
 func _sent_voice_data(data: PoolRealArray) -> void:
-	labelLog.add_text(\"sent voice data of size:%s\\n\" % data.size())
+	labelLog.add_text(\"Sent voice data of size:%s\\n\" % data.size())
 
 
 func ui_transition() -> void:
