@@ -63,4 +63,5 @@ func stop() -> void:
 			get_tree().network_peer.stop()
 		elif get_tree().network_peer is NetworkedMultiplayerENet:
 			get_tree().network_peer.close_connection()
+		get_tree().set_network_peer(null)
 
