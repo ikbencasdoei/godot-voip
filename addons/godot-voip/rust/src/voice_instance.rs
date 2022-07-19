@@ -261,11 +261,11 @@ impl NativeVoiceInstance {
                     effect_capture.clear_buffer();
                 }
 
-                let stereo_data = effect_capture.get_buffer(effect_capture.get_frames_available());
-                let vec_stereo_data = stereo_data.read().to_vec();
 
-                let mut mono_data: PoolArray<f32> = PoolArray::new();
-                mono_data.resize(vec_stereo_data.len() as i32);
+                let vec_stereo_data = effect_capture
+                    .get_buffer(effect_capture.get_frames_available())
+                    .read()
+                    .to_vec();
 
                 let mut vec_mono_data: Vec<f32> = Vec::with_capacity(vec_stereo_data.len());
 
@@ -282,7 +282,7 @@ impl NativeVoiceInstance {
                     return;
                 }
 
-                mono_data.append_vec(&mut vec_mono_data);
+                let mono_data = PoolArray::from_vec(vec_mono_data);
 
                 if self.listen {
                     self.speak(owner, mono_data.clone());
