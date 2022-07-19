@@ -203,12 +203,6 @@ impl NativeVoiceInstance {
 
                 self.receive_buffer.remove(0);
             }
-
-            // if playback.get_frames_available() > 0 {
-            //     let mut buffer = Vector2Array::new();
-            //     buffer.resize(playback.get_frames_available() as i32);
-            //     playback.push_buffer(buffer);
-            // }
         }
     }
 
