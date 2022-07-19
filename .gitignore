@@ -15,5 +15,6 @@ mono_crash.*.json
 .directory
 *~
 
+# gdnative Rust ignores
 addons/godot-voip/rust/target/
 addons/godot-voip/rust/Cargo.lock
