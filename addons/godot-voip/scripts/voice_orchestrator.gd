@@ -10,6 +10,9 @@ export var recording: bool = false setget _set_recording
 export var listen: bool = false setget _set_listen
 export(float, 0.0, 1.0) var input_threshold: = 0.005 setget _set_input_threshold
 
+enum TypeVoiceInstance {NATIVE, GDSCRIPT}
+export(TypeVoiceInstance) var type_voice_instance
+
 var instances := {}
 var _id = null
 
@@ -29,7 +32,11 @@ func _physics_process(delta: float) -> void:
 		_reset()
 
 func _create_instance(id: int) -> void:
-	var instance := VoiceInstance.new()
+	var instance
+	if type_voice_instance == TypeVoiceInstance.NATIVE:
+		instance = NativeVoiceInstance.new()
+	elif type_voice_instance == TypeVoiceInstance.GDSCRIPT:
+		instance = VoiceInstance.new()
 
 	if id == get_tree().get_network_unique_id():
 		instance.recording = recording
@@ -51,7 +58,7 @@ func _create_instance(id: int) -> void:
 	emit_signal("created_instance", id)
 
 func _remove_instance(id: int) -> void:
-	var instance: VoiceInstance = instances[id]
+	var instance = instances[id]
 
 	if id == _id:
 		_id = null
