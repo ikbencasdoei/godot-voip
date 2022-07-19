@@ -146,6 +146,7 @@ func _sent_voice_data(data: PoolRealArray) -> void:
 
 func ui_transition() -> void:
 	optionButtonServerType.disabled = true
+	optionButtonVoiceType.disabled = true
 	buttonServer.disabled = true
 	buttonClient.disabled = true
 	buttonVoice.disabled = false
@@ -160,6 +161,7 @@ func ui_transition() -> void:
 
 func ui_reset() -> void:
 	optionButtonServerType.disabled = false
+	optionButtonVoiceType.disabled = false
 	buttonServer.disabled = false
 	buttonClient.disabled = false
 	buttonVoice.disabled = true
