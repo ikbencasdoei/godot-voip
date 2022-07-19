@@ -85,10 +85,15 @@ impl NativeVoiceInstance {
     }
 
     fn register_class(builder: &ClassBuilder<Self>) {
-        builder.signal("received_voice_data").done();
-        builder.signal("sent_voice_data").done();
-        builder.signal("created_instance").done();
-        builder.signal("removed_instance").done();
+        builder
+            .signal("received_voice_data")
+            .with_param("data", VariantType::Float32Array)
+            .with_param("sender_id", VariantType::I64)
+            .done();
+        builder
+            .signal("sent_voice_data")
+            .with_param("data", VariantType::Float32Array)
+            .done();
 
         builder
             .property::<NodePath>("custom_voice_audio_stream_player")
