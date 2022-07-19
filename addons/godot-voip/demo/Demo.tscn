@@ -261,7 +261,6 @@ margin_left = 64.0
 margin_right = 250.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
-text = "127.0.0.1"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 112.0
