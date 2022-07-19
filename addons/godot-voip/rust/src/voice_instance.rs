@@ -38,7 +38,7 @@ impl NativeVoiceInstance {
         }
     }
 
-    fn do_playback(&mut self, voice: &TRef<Node, Shared>) {
+    fn audiostream_set_playback_generator(&mut self, voice: &TRef<Node, Shared>) {
         let generator = AudioStreamGenerator::new();
         generator.set_buffer_length(0.1f64);
 
@@ -136,7 +136,7 @@ impl NativeVoiceInstance {
         if !value.is_empty() {
             match owner.get_node(value.to_string()) {
                 Some(player) => {
-                    self.do_playback(unsafe { &player.assume_safe() });
+                    self.audiostream_set_playback_generator(unsafe { &player.assume_safe() });
                 }
                 None => godot_error!(
                     "VoiceInstance: Referenced custom AudioStreamPlayer does not exist."
@@ -178,7 +178,9 @@ impl NativeVoiceInstance {
     fn speak(&mut self, owner: &Node, data: PoolArray<f32>) {
         if self.playback.is_none() {
             let voice = AudioStreamPlayer::new().into_shared();
-            self.do_playback(unsafe { &voice.assume_safe().upcast::<Node>() });
+            self.audiostream_set_playback_generator(unsafe {
+                &voice.assume_safe().upcast::<Node>()
+            });
             owner.add_child(voice, false);
         }
 
@@ -259,7 +261,6 @@ impl NativeVoiceInstance {
                 if !self.prev_frame_recording {
                     effect_capture.clear_buffer();
                 }
-
 
                 let vec_stereo_data = effect_capture
                     .get_buffer(effect_capture.get_frames_available())
