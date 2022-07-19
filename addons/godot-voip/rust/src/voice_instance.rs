@@ -3,7 +3,7 @@ use std::cmp::min;
 use gdnative::{
     api::{
         AudioEffectCapture, AudioServer, AudioStreamGenerator, AudioStreamGeneratorPlayback,
-        AudioStreamPlayer, AudioStreamPlayer2D, AudioStreamPlayer3D,
+        AudioStreamMicrophone, AudioStreamPlayer, AudioStreamPlayer2D, AudioStreamPlayer3D,
     },
     export::hint::{FloatHint, RangeHint},
     prelude::*,
@@ -212,31 +212,46 @@ impl NativeVoiceInstance {
         }
     }
 
-    fn create_mic(&mut self) {
+    fn create_mic(&mut self, owner: &Node) {
         let audio_server = AudioServer::godot_singleton();
-        let string = "VoiceMicRecorder";
-        let mut count = 0;
-        while audio_server.get_bus_index(format!("{}{}", string, count)) > -1 {
-            count += 1;
-        }
 
-        let i = audio_server.bus_count();
-        audio_server.add_bus(i);
-        audio_server.set_bus_name(i, format!("{}{}", string, count));
-        audio_server.add_bus_effect(i, AudioEffectCapture::new(), 0);
+        //add audio bus with record effect
+        let record_bus_index = audio_server.bus_count();
+        audio_server.add_bus(record_bus_index);
+        audio_server.set_bus_name(record_bus_index, {
+            const BUS_TITLE: &str = "VoiceMicRecorder";
+            let mut i = 0;
+            loop {
+                let name = format!("{}{}", BUS_TITLE, i);
+                if audio_server.get_bus_index(&name) == -1 {
+                    break name;
+                } else {
+                    i += 1
+                }
+            }
+        });
+        audio_server.add_bus_effect(record_bus_index, AudioEffectCapture::new(), 0);
+        audio_server.set_bus_mute(record_bus_index, true);
         self.effect_capture = Some(
             audio_server
-                .get_bus_effect(i, 0)
+                .get_bus_effect(record_bus_index, 0)
                 .unwrap()
                 .cast::<AudioEffectCapture>()
                 .unwrap(),
         );
+
+        //add adioplayer with microphone playing on the previously created bus
+        let mic_player = AudioStreamPlayer::new();
+        mic_player.set_stream(AudioStreamMicrophone::new());
+        mic_player.set_bus(audio_server.get_bus_name(record_bus_index));
+        mic_player.play(0.0);
+        owner.add_child(mic_player, false);
     }
 
     fn process_mic(&mut self, owner: &Node) {
         if self.recording {
             if self.effect_capture.is_none() {
-                self.create_mic()
+                self.create_mic(owner);
             }
 
             let effect_capture = unsafe { self.effect_capture.as_ref().unwrap().assume_safe() };
