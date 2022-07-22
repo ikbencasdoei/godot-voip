@@ -27,10 +27,10 @@ godot-voip is a [Godot Engine](https://godotengine.org/) addon which makes it ve
 ### For macOS users
 Users running godot-voip on macOS need to make sure the microphone format in macOS audio settings is equal to the mix-rate in Godot project-settings.
 
-# GDNative
+## GDNative
 Some parts of this library have been ported to [gdnative-rust](https://godot-rust.github.io/) to improve performance and to implement compression using the [opus-codec](https://opus-codec.org/) and other audio processing. To use the gdnative implementation use the `NativeVoiceInstance` node instead of the usual `VoiceIntance`.
 
-## Building
+### Building
 To compile the gdnative parts of this library you will need **Rust** installed on your machine: https://www.rust-lang.org/. Then open `addons/gdnative/` in your terminal and run `cargo build`. You'll find the compiled binary in `target/`. Then add the compiled binary to your platform in the godot-voip gdnative library called `godot-voip-native.tres` also found in the gdnative directory.
 
 
