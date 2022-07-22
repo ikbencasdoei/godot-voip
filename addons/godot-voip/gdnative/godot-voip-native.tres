@@ -2,5 +2,3 @@
 
 [resource]
 symbol_prefix = "godot_voip_"
-entry/Windows.64 = "res://addons/godot-voip/gdnative/target/debug/godot_voip.dll"
-dependency/Windows.64 = [  ]
