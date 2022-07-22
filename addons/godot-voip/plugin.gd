@@ -16,6 +16,13 @@ func _enter_tree() -> void:
 		preload("res://addons/godot-voip/icons/VoiceOrchestrator.svg")
 	)
 
+	add_custom_type(
+		"NativeVoiceInstance",
+		"Node",
+		preload("res://addons/godot-voip/scripts/native_voice_instance.gdns"),
+		preload("res://addons/godot-voip/icons/NativeVoiceInstance.svg")
+	)
+
 func _exit_tree() -> void:
 	remove_custom_type("VoiceInstance")
 	remove_custom_type("VoiceOrchestrator")

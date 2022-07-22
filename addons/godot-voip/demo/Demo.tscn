@@ -13,6 +13,7 @@ onready var buttonVoice : Button = $MarginContainer/HBoxContainer/VBoxContainer/
 onready var buttonDisconnect : Button = $MarginContainer/HBoxContainer/VBoxContainer/Disconnect
 
 onready var optionButtonServerType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5/ServerType
+onready var optionButtonVoiceType: OptionButton = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6/VoiceType
 onready var spinBoxHostPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port
 onready var lineEditClientIp: LineEdit = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip
 onready var spinBoxClientPort: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/Port
@@ -47,7 +48,13 @@ func _ready() -> void:
 		type_name = type_name.substr(0, 1) + type_name.substr(1).to_lower()
 		optionButtonServerType.add_item(type_name, i)
 
+	for i in voice.TypeVoiceInstance.values():
+		var type_name: String = voice.TypeVoiceInstance.keys()[i]
+		type_name = type_name.substr(0, 1) + type_name.substr(1).to_lower()
+		optionButtonVoiceType.add_item(type_name, i)
+
 	optionButtonServerType.selected = network.client_type
+	optionButtonVoiceType.selected = voice.type_voice_instance
 	spinBoxHostPort.value = network.server_port
 	lineEditClientIp.text = network.server_ip
 	spinBoxClientPort.value = network.server_port
@@ -139,6 +146,7 @@ func _sent_voice_data(data: PoolRealArray) -> void:
 
 func ui_transition() -> void:
 	optionButtonServerType.disabled = true
+	optionButtonVoiceType.disabled = true
 	buttonServer.disabled = true
 	buttonClient.disabled = true
 	buttonVoice.disabled = false
@@ -153,6 +161,7 @@ func ui_transition() -> void:
 
 func ui_reset() -> void:
 	optionButtonServerType.disabled = false
+	optionButtonVoiceType.disabled = false
 	buttonServer.disabled = false
 	buttonClient.disabled = false
 	buttonVoice.disabled = true
@@ -168,6 +177,9 @@ func ui_reset() -> void:
 
 func _on_ServerType_item_selected(index: int) -> void:
 	network.client_type = index
+
+func _on_VoiceType_item_selected(index: int) -> void:
+	voice.type_voice_instance = index
 "
 
 [node name="Demo" type="Control"]
@@ -188,15 +200,12 @@ custom_constants/margin_right = 50
 custom_constants/margin_top = 50
 custom_constants/margin_left = 50
 custom_constants/margin_bottom = 50
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 974.0
-margin_bottom = 588.0
+margin_bottom = 618.0
 custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
@@ -204,7 +213,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_right = 250.0
-margin_bottom = 538.0
+margin_bottom = 568.0
 rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
@@ -230,15 +239,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer6" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 250.0
-margin_bottom = 34.0
+margin_bottom = 50.0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
+margin_top = 3.0
+margin_right = 126.0
+margin_bottom = 17.0
+text = "VoiceInstance type:"
+
+[node name="VoiceType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6"]
+margin_left = 130.0
+margin_right = 250.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+margin_top = 60.0
+margin_right = 250.0
+margin_bottom = 64.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 44.0
+margin_top = 74.0
 margin_right = 250.0
-margin_bottom = 68.0
+margin_bottom = 98.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -264,23 +293,23 @@ __meta__ = {
 }
 
 [node name="Server" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 78.0
+margin_top = 108.0
 margin_right = 250.0
-margin_bottom = 98.0
+margin_bottom = 128.0
 text = "Start server"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 108.0
+margin_top = 138.0
 margin_right = 250.0
-margin_bottom = 112.0
+margin_bottom = 142.0
 
 [node name="HBoxContainer1" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 122.0
+margin_top = 152.0
 margin_right = 250.0
-margin_bottom = 146.0
+margin_bottom = 176.0
 
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1"]
 margin_top = 5.0
@@ -298,9 +327,9 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 156.0
+margin_top = 186.0
 margin_right = 250.0
-margin_bottom = 180.0
+margin_bottom = 210.0
 
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
 margin_top = 5.0
@@ -323,23 +352,23 @@ __meta__ = {
 }
 
 [node name="Client" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 190.0
+margin_top = 220.0
 margin_right = 250.0
-margin_bottom = 210.0
+margin_bottom = 240.0
 text = "Start client"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 220.0
+margin_top = 250.0
 margin_right = 250.0
-margin_bottom = 224.0
+margin_bottom = 254.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 234.0
+margin_top = 264.0
 margin_right = 250.0
-margin_bottom = 258.0
+margin_bottom = 288.0
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_top = 5.0
@@ -360,9 +389,9 @@ step = 0.0
 editable = false
 
 [node name="InputThreshold" type="HSlider" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 268.0
+margin_top = 298.0
 margin_right = 250.0
-margin_bottom = 284.0
+margin_bottom = 314.0
 max_value = 0.1
 step = 0.0
 allow_greater = true
@@ -371,9 +400,9 @@ editable = false
 ticks_on_borders = true
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 294.0
+margin_top = 324.0
 margin_right = 250.0
-margin_bottom = 318.0
+margin_bottom = 348.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -400,9 +429,9 @@ __meta__ = {
 }
 
 [node name="Voice" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 328.0
+margin_top = 358.0
 margin_right = 250.0
-margin_bottom = 348.0
+margin_bottom = 378.0
 disabled = true
 text = "Speak"
 __meta__ = {
@@ -410,9 +439,9 @@ __meta__ = {
 }
 
 [node name="Disconnect" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 358.0
+margin_top = 388.0
 margin_right = 250.0
-margin_bottom = 378.0
+margin_bottom = 408.0
 disabled = true
 text = "Disconnect"
 __meta__ = {
@@ -420,9 +449,9 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
-margin_top = 388.0
+margin_top = 418.0
 margin_right = 250.0
-margin_bottom = 538.0
+margin_bottom = 568.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -441,7 +470,7 @@ stretch_mode = 5
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_left = 300.0
 margin_right = 924.0
-margin_bottom = 538.0
+margin_bottom = 568.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -468,13 +497,14 @@ __meta__ = {
 [node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
-margin_bottom = 538.0
+margin_bottom = 568.0
 focus_mode = 2
 size_flags_vertical = 3
 scroll_following = true
 selection_enabled = true
 
 [connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer5/ServerType" to="." method="_on_ServerType_item_selected"]
+[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer6/VoiceType" to="." method="_on_VoiceType_item_selected"]
 [connection signal="value_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/Port" to="." method="_on_Port_value_changed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/Server" to="." method="_on_Button_server_pressed"]
 [connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer1/Ip" to="." method="_on_Ip_text_changed"]
