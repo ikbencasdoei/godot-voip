@@ -21,8 +21,8 @@ onready var checkboxListen: CheckBox = $MarginContainer/HBoxContainer/VBoxContai
 onready var checkBoxToggle: CheckBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/Toggle
 onready var sliderInputThreshold: HSlider = $MarginContainer/HBoxContainer/VBoxContainer/InputThreshold
 
-onready var labelStatus: Label = $MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/Status
-onready var labelLog: RichTextLabel = $MarginContainer/HBoxContainer/VBoxContainer2/Log
+onready var labelStatus: Label = $MarginContainer/HBoxContainer/Control/VBoxContainer2/HBoxContainer/Status
+onready var labelLog: RichTextLabel = $MarginContainer/HBoxContainer/Control/VBoxContainer2/Log
 onready var spinBoxInputThreshold: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/Value
 
 onready var voice: VoiceOrchestrator = $VoiceOrchestrator
@@ -205,7 +205,7 @@ custom_constants/margin_bottom = 50
 margin_left = 50.0
 margin_top = 50.0
 margin_right = 974.0
-margin_bottom = 618.0
+margin_bottom = 550.0
 custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
@@ -213,7 +213,7 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 margin_right = 250.0
-margin_bottom = 568.0
+margin_bottom = 500.0
 rect_min_size = Vector2( 250, 0 )
 custom_constants/separation = 10
 __meta__ = {
@@ -451,34 +451,45 @@ __meta__ = {
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 margin_top = 418.0
 margin_right = 250.0
-margin_bottom = 568.0
+margin_bottom = 500.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/VBoxContainer/CenterContainer"]
-margin_left = 50.0
-margin_right = 200.0
-margin_bottom = 150.0
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer"]
+margin_left = 300.0
+margin_right = 924.0
+margin_bottom = 500.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/Control/CenterContainer"]
+margin_left = 237.0
+margin_top = 175.0
+margin_right = 387.0
+margin_bottom = 325.0
 rect_min_size = Vector2( 150, 150 )
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 5
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 300.0
-margin_right = 924.0
-margin_bottom = 568.0
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Control/VBoxContainer2"]
 margin_right = 624.0
 margin_bottom = 14.0
 
-[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/Control/VBoxContainer2/HBoxContainer"]
 margin_right = 43.0
 margin_bottom = 14.0
 text = "Status:"
@@ -486,7 +497,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="Status" type="Label" parent="MarginContainer/HBoxContainer/Control/VBoxContainer2/HBoxContainer"]
 margin_left = 47.0
 margin_right = 47.0
 margin_bottom = 14.0
@@ -494,10 +505,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="Log" type="RichTextLabel" parent="MarginContainer/HBoxContainer/Control/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 624.0
-margin_bottom = 568.0
+margin_bottom = 500.0
 focus_mode = 2
 size_flags_vertical = 3
 scroll_following = true
