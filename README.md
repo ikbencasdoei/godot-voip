@@ -37,12 +37,12 @@ This node implements a single voice connection.
 * `sent_voice_data(data: PoolRealArray)` Emitted when recording and data is sent.
 
 ### Properties
-|Type|Name|description|
-|----|----|-----------|
-|`NodePath`|custom_voice_audio_stream_player|When used, the referenced `AudioStreamPlayer`/`AudioStreamPlayer2D`/`AudioStreamPlayer3D` will be used as output for incoming audio data.|
-|`bool`|recording|If true, the VoiceInstance will process and send microhphone audio to the other VoipInstance.|
-|`bool`|listen|If true, the VoiceInstance will also play any microhphone data it records.|
-|`float`|input_threshold|Value above which microhphone data will be sent. Set to `0` to disable.|
+| Type       | Name                             | description                                                                                                                               |
+| ---------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `NodePath` | custom_voice_audio_stream_player | When used, the referenced `AudioStreamPlayer`/`AudioStreamPlayer2D`/`AudioStreamPlayer3D` will be used as output for incoming audio data. |
+| `bool`     | recording                        | If true, the VoiceInstance will process and send microhphone audio to the other VoipInstance.                                             |
+| `bool`     | listen                           | If true, the VoiceInstance will also play any microhphone data it records.                                                                |
+| `float`    | input_threshold                  | Value above which microhphone data will be sent. Set to `0` to disable.                                                                   |
 
 ## NativeVoiceInstance <img src="https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icons/NativeVoiceInstance.svg" alt="icon" width="32"/>
 This node implements a single voice connection using rust-gdnative.
@@ -52,12 +52,12 @@ This node implements a single voice connection using rust-gdnative.
 * `sent_voice_data(data: PoolRealArray)` Emitted when recording and data is sent.
 
 ### Properties
-|Type|Name|description|
-|----|----|-----------|
-|`NodePath`|custom_voice_audio_stream_player|When used, the referenced `AudioStreamPlayer`/`AudioStreamPlayer2D`/`AudioStreamPlayer3D` will be used as output for incoming audio data.|
-|`bool`|recording|If true, the NativeVoiceInstance will process and send microhphone audio to the other NativeVoiceInstance.|
-|`bool`|listen|If true, the NativeVoiceInstance will also play any microhphone data it records.|
-|`float`|input_threshold|Value above which microhphone data will be sent. Set to `0` to disable.|
+| Type       | Name                             | description                                                                                                                               |
+| ---------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `NodePath` | custom_voice_audio_stream_player | When used, the referenced `AudioStreamPlayer`/`AudioStreamPlayer2D`/`AudioStreamPlayer3D` will be used as output for incoming audio data. |
+| `bool`     | recording                        | If true, the NativeVoiceInstance will process and send microhphone audio to the other NativeVoiceInstance.                                |
+| `bool`     | listen                           | If true, the NativeVoiceInstance will also play any microhphone data it records.                                                          |
+| `float`    | input_threshold                  | Value above which microhphone data will be sent. Set to `0` to disable.                                                                   |
 
 ## VoiceOrchestrator <img src="https://raw.githubusercontent.com/casbrugman/godot-voip/master/addons/godot-voip/icons/VoiceOrchestrator.svg" alt="icon" width="32"/>
 This node implements multiple voice connections. It will automatically spawn new VoiceInstances when a player connects to the server and will remove them again after they disconnect.
@@ -69,11 +69,11 @@ This node implements multiple voice connections. It will automatically spawn new
 * `removed_instance(id: int)` Emitted when a `VoiceInstance` is removed.
 
 ### Properties
-|Type|Name|description|
-|----|----|-----------|
-|`bool`|recording|If true, the VoiceInstance will process and send microhphone data to the other VoipInstance.|
-|`bool`|listen|If true, the VoiceInstance will also play any microhphone data it records.|
-|`float`|input_threshold|Value above which microhphone data will be sent. Set to `0` to disable.|
-|`enum`|type_voice_instance|Type of VoiceInstance used. `NATIVE, GDSCRIPT`|
+| Type    | Name                | description                                                                                  |
+| ------- | ------------------- | -------------------------------------------------------------------------------------------- |
+| `bool`  | recording           | If true, the VoiceInstance will process and send microhphone data to the other VoipInstance. |
+| `bool`  | listen              | If true, the VoiceInstance will also play any microhphone data it records.                   |
+| `float` | input_threshold     | Value above which microhphone data will be sent. Set to `0` to disable.                      |
+| `enum`  | type_voice_instance | Type of VoiceInstance used. `NATIVE, GDSCRIPT`                                               |
 
 **Does not support a custom `AudioStreamPlayer`.**
