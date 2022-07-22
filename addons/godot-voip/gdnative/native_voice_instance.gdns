@@ -1,6 +1,6 @@
 [gd_resource type="NativeScript" load_steps=2 format=2]
 
-[ext_resource path="res://addons/godot-voip/scripts/godot-voip.tres" type="GDNativeLibrary" id=1]
+[ext_resource path="res://addons/godot-voip/gdnative/godot-voip.tres" type="GDNativeLibrary" id=1]
 
 [resource]
 class_name = "NativeVoiceInstance"
