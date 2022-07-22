@@ -56,6 +56,10 @@ config/icon="res://icon.png"
 default_bus_layout=""
 enable_audio_input=true
 
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/godot-voip/plugin.cfg" )
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
