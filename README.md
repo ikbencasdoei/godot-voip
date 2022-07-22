@@ -13,8 +13,8 @@ godot-voip is a [Godot Engine](https://godotengine.org/) addon which makes it ve
 
 (Any kind of high-level multiplayer peer is required.)
 1. Click on the AssetLib inside editor or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/425) to download the latest release, or you can clone/download this repository to get the latest commit.
-2. Select the `addons/godot-voip` folder and move it into your Godot project. 
-(**Note**: make sure the structure is still `res://addons/godot-voip`)
+2. Select the `addons/godot-voip/` folder and move it into your Godot project. 
+(**Note**: make sure the structure is still `res://addons/godot-voip/`)
 3. Go to project-settings/audio and enable audio input.
 4. Now go to the plugins tab also inside project-settings and enable the godot-voip plugin.
 5. Add either a `VoiceInstance` (one connection) or a `VoiceOrchestrator` (more than 2 participants) node to your scene.
@@ -22,10 +22,17 @@ godot-voip is a [Godot Engine](https://godotengine.org/) addon which makes it ve
 
 ### Running demo
 1. Go to the templates tab in the Godot Engine project manager and look for godot-voip, or go to the [Godot Asset Library](https://godotengine.org/asset-library/asset/951) to manually download the latest release, or you can clone/download this repository to get the latest commit.
-2. Open downloaded project.
+2. Open and run downloaded project.
 
 ### For macOS users
-Users running godot-voip on macOS need to make sure the microphone format in macOS audio settings is equal to the mix-rate in Godot project-settings. 
+Users running godot-voip on macOS need to make sure the microphone format in macOS audio settings is equal to the mix-rate in Godot project-settings.
+
+# GDNative
+Some parts of this library have been ported to [gdnative-rust](https://godot-rust.github.io/) to improve performance and to implement compression using the [opus-codec](https://opus-codec.org/) and other audio processing. To use the gdnative implementation use the `NativeVoiceInstance` node instead of the usual `VoiceIntance`.
+
+## Building
+To compile the gdnative parts of this library you will need **Rust** installed on your machine: https://www.rust-lang.org/. Then open `addons/gdnative/` in your terminal and run `cargo build`. You'll find the compiled binary in `target/`. Then add the compiled binary to your platform in the godot-voip gdnative library called `godot-voip-native.tres` also found in the gdnative directory.
+
 
 # Documentation
 
@@ -76,4 +83,4 @@ This node implements multiple voice connections. It will automatically spawn new
 | `float` | input_threshold     | Value above which microhphone data will be sent. Set to `0` to disable.                      |
 | `enum`  | type_voice_instance | Type of VoiceInstance used. `NATIVE, GDSCRIPT`                                               |
 
-**Does not support a custom `AudioStreamPlayer`.**
+**VoiceOrchestrator does not support a custom `AudioStreamPlayer`.**
