@@ -16,8 +16,8 @@ mono_crash.*.json
 *~
 
 # gdnative Rust ignores
-addons/godot-voip/rust/target/
-addons/godot-voip/rust/Cargo.lock
+addons/godot-voip/gdnative/target/
+addons/godot-voip/gdnative/Cargo.lock
 
 #vscode specific ignores
 .vscode/
