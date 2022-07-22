@@ -19,7 +19,7 @@ func _enter_tree() -> void:
 	add_custom_type(
 		"NativeVoiceInstance",
 		"Node",
-		preload("res://addons/godot-voip/scripts/native_voice_instance.gdns"),
+		preload("res://addons/godot-voip/gdnative/native_voice_instance.gdns"),
 		preload("res://addons/godot-voip/icons/NativeVoiceInstance.svg")
 	)
 
