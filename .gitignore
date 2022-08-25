@@ -10,6 +10,8 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+*.csproj
+*.sln
 
 # System/tool-specific ignores
 .directory

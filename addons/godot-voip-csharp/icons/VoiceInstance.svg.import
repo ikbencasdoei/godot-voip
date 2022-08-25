@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/NativeVoiceInstance.svg-4b1f95085eea94dfd95eccf33be4ed72.stex"
+path="res://.import/VoiceInstance.svg-3e27d2f1c3a068a6a8b32ac01e39e9e6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot-voip/icons/NativeVoiceInstance.svg"
-dest_files=[ "res://.import/NativeVoiceInstance.svg-4b1f95085eea94dfd95eccf33be4ed72.stex" ]
+source_file="res://addons/godot-voip-csharp/icons/VoiceInstance.svg"
+dest_files=[ "res://.import/VoiceInstance.svg-3e27d2f1c3a068a6a8b32ac01e39e9e6.stex" ]
 
 [params]
 
