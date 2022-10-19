@@ -33,6 +33,8 @@ Some parts of this library have been ported to [gdnative-rust](https://godot-rus
 ### Building
 To compile the gdnative parts of this library you will need **Rust** installed on your machine: https://www.rust-lang.org/. Then open `addons/gdnative/` in your terminal and run `cargo build`. You'll find the compiled binary in `target/`. Then add the compiled binary to your platform in the godot-voip gdnative library called `godot-voip-native.tres` also found in the gdnative directory.
 
+## Todo
+- [ ] Implement audio compression.
 
 # Documentation
 
