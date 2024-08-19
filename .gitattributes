@@ -1,5 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=false eol=lf
+*.png binary
 
 # Ignore some files when exporting.
 /.github            export-ignore
